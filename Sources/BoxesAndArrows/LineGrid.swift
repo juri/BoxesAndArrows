@@ -252,7 +252,7 @@ extension AccessGrid {
         func rectIntersectsBox(_ rect: CGRect) -> Bool {
             for (boxID, box) in graph.boxes {
                 if boxID == sourceBox.id || boxID == targetBox.id { continue }
-                if box.frame.intersects(rect) { return true }
+                if box.frame.insetBy(dx: -10, dy: -10).intersects(rect) { return true }
             }
             return false
         }
