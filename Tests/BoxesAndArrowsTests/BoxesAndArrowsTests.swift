@@ -66,14 +66,18 @@ final class BoxesAndArrowsTests: XCTestCase {
     func testTwoLeftToRight() throws {
         var graph = Graph()
         let left = Box(label: "left")
+        let center = Box(label: "center")
         let right = Box(label: "right")
         graph.add(box: left)
+        graph.add(box: center)
         graph.add(box: right)
         graph.connect(left, to: right)
 
         let solver = try graph.makeSolver()
         try solver.add(constraint: left.top.variable == right.top.variable)
-        try solver.add(constraint: left.right.variable + 30.0 == right.left.variable)
+        try solver.add(constraint: left.top.variable == center.top.variable)
+        try solver.add(constraint: left.right.variable + 30.0 == center.left.variable)
+        try solver.add(constraint: center.right.variable + 30.0 == right.left.variable)
 
         solver.update()
 
@@ -85,14 +89,18 @@ final class BoxesAndArrowsTests: XCTestCase {
     func testTwoRightToLeft() throws {
         var graph = Graph()
         let left = Box(label: "left")
+        let center = Box(label: "center")
         let right = Box(label: "right")
         graph.add(box: left)
+        graph.add(box: center)
         graph.add(box: right)
         graph.connect(right, to: left)
 
         let solver = try graph.makeSolver()
         try solver.add(constraint: left.top.variable == right.top.variable)
-        try solver.add(constraint: left.right.variable + 30.0 == right.left.variable)
+        try solver.add(constraint: left.top.variable == center.top.variable)
+        try solver.add(constraint: left.right.variable + 30.0 == center.left.variable)
+        try solver.add(constraint: center.right.variable + 30.0 == right.left.variable)
 
         solver.update()
 
@@ -104,14 +112,18 @@ final class BoxesAndArrowsTests: XCTestCase {
     func testUpToDown() throws {
         var graph = Graph()
         let up = Box(label: "up")
+        let center = Box(label: "center")
         let down = Box(label: "down")
         graph.add(box: up)
+        graph.add(box: center)
         graph.add(box: down)
         graph.connect(up, to: down)
 
         let solver = try graph.makeSolver()
         try solver.add(constraint: up.left.variable == down.left.variable)
-        try solver.add(constraint: up.bottom.variable + 30.0 == down.top.variable)
+        try solver.add(constraint: up.left.variable == center.left.variable)
+        try solver.add(constraint: up.bottom.variable + 30.0 == center.top.variable)
+        try solver.add(constraint: center.bottom.variable + 30.0 == down.top.variable)
 
         solver.update()
 
@@ -123,14 +135,18 @@ final class BoxesAndArrowsTests: XCTestCase {
     func testDownToUp() throws {
         var graph = Graph()
         let up = Box(label: "up")
+        let center = Box(label: "center")
         let down = Box(label: "down")
         graph.add(box: up)
+        graph.add(box: center)
         graph.add(box: down)
         graph.connect(down, to: up)
 
         let solver = try graph.makeSolver()
         try solver.add(constraint: up.left.variable == down.left.variable)
-        try solver.add(constraint: up.bottom.variable + 30.0 == down.top.variable)
+        try solver.add(constraint: up.left.variable == center.left.variable)
+        try solver.add(constraint: up.bottom.variable + 30.0 == center.top.variable)
+        try solver.add(constraint: center.bottom.variable + 30.0 == down.top.variable)
 
         solver.update()
 
