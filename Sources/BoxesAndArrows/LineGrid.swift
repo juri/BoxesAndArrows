@@ -59,7 +59,7 @@ struct AccessGrid {
             (0 ..< Int(floor(rectVerticalCellCount))).map { vcell in
                 Coordinate(
                     x: left + hcell,
-                    y: top + vcell //Int(floor(rectVerticalCellCount / 2.0))
+                    y: top + vcell
                 )
             }
         }
@@ -80,10 +80,10 @@ struct AccessGrid {
         switch direction {
         case .up:
             if source.y == 0 { return false }
-            return canGo(from: Coordinate(x: source.x, y: source.y - 1), to: .down)
+            return self.canGo(from: Coordinate(x: source.x, y: source.y - 1), to: .down)
         case .left:
             if source.x == 0 { return false }
-            return canGo(from: Coordinate(x: source.x - 1, y: source.y), to: .right)
+            return self.canGo(from: Coordinate(x: source.x - 1, y: source.y), to: .right)
         case .down:
             if source.y >= self.height - 1 { return false }
             return self[source].down

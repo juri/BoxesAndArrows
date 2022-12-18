@@ -1,4 +1,3 @@
-import Foundation
 import Cocoa
 import CoreGraphics
 
@@ -17,7 +16,7 @@ func attributedString(for box: Box) -> NSAttributedString {
     paragraphStyle.alignment = .center
     let attributes: [NSAttributedString.Key: Any] = [
         .font: font,
-        .paragraphStyle: paragraphStyle
+        .paragraphStyle: paragraphStyle,
     ]
     let attributedString = NSAttributedString(string: box.label, attributes: attributes)
     return attributedString
@@ -59,7 +58,7 @@ func draw(graph: Graph) -> NSImage {
             let lineStart: CGPoint
             let pp0 = accessGrid.point(at: path0)
 
-            if path0.x == path1.x  {
+            if path0.x == path1.x {
                 // vertical
                 if path0.y < path1.y {
                     // going down, will cross with bottom of box

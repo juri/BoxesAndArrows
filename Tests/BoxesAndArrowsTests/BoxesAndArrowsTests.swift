@@ -1,6 +1,6 @@
-import XCTest
 @testable import BoxesAndArrows
 import Cassowary
+import XCTest
 
 final class BoxesAndArrowsTests: XCTestCase {
     func test() throws {

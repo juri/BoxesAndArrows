@@ -1,6 +1,6 @@
+import Cassowary
 import CoreGraphics
 import Tagged
-import Cassowary
 
 public struct Box {
     public enum Tags {

@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/compnerd/cassowary.git", from: "0.0.1"),
-        .package(url: "https://github.com/pointfreeco/swift-tagged.git", from: "0.8.0")
+        .package(url: "https://github.com/pointfreeco/swift-tagged.git", from: "0.8.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -24,9 +24,11 @@ let package = Package(
             dependencies: [
                 .product(name: "cassowary", package: "cassowary"),
                 .product(name: "Tagged", package: "swift-tagged"),
-            ]),
+            ]
+        ),
         .testTarget(
             name: "BoxesAndArrowsTests",
-            dependencies: ["BoxesAndArrows"]),
+            dependencies: ["BoxesAndArrows"]
+        ),
     ]
 )
