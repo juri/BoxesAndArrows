@@ -64,12 +64,28 @@ public struct Box {
 
 public struct Arrow {
     public var source: Box.ID
+    public var sourceHead: ArrowHead = .line
     public var target: Box.ID
+    public var targetHead: ArrowHead = .line
+}
+
+public enum ArrowHead {
+    case line
 }
 
 extension Arrow {
-    init(source: Box, target: Box) {
-        self.init(source: source.id, target: target.id)
+    init(
+        source: Box,
+        sourceHead: ArrowHead = .line,
+        target: Box,
+        targetHead: ArrowHead = .line
+    ) {
+        self.init(
+            source: source.id,
+            sourceHead: sourceHead,
+            target: target.id,
+            targetHead: targetHead
+        )
     }
 }
 
