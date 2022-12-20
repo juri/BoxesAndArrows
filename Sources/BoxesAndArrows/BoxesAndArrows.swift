@@ -1,5 +1,6 @@
 import Cassowary
 import CoreGraphics
+import Draw
 import Tagged
 
 public struct Box {
@@ -50,6 +51,13 @@ public struct Box {
         CGRect(
             origin: CGPoint(x: self.left.variable.value, y: self.top.variable.value),
             size: CGSize(width: self.width.variable.value, height: self.height.variable.value)
+        )
+    }
+
+    var frameRectangle: Rectangle {
+        Rectangle(
+            origin: Point(x: self.left.variable.value, y: self.top.variable.value),
+            size: Size(width: self.width.variable.value, height: self.height.variable.value)
         )
     }
 }
@@ -105,6 +113,13 @@ public struct Graph {
             size: CGSize(width: self.width.variable.value, height: self.height.variable.value)
         )
     }
+
+    var frameRectangle: Rectangle {
+        Rectangle(
+            origin: Point(x: self.left.variable.value, y: self.top.variable.value),
+            size: Size(width: self.width.variable.value, height: self.height.variable.value)
+        )
+    }
 }
 
 public enum Vertical {
@@ -135,7 +150,7 @@ public struct Anchor<Direction> {
 }
 
 extension Graph {
-    func makeSolver() throws -> Solver {
+    func makeSolver(graphics: any Graphics) throws -> Solver {
         let solver = Solver()
         let outerMargin = 50.0
         for box in self.boxes.values {
@@ -149,7 +164,7 @@ extension Graph {
             try solver.add(constraint: box.right.variable <= self.right.variable - outerMargin)
             try solver.add(constraint: box.bottom.variable <= self.bottom.variable - outerMargin)
 
-            let size = measure(box: box)
+            let size = graphics.measure(attributedString: attributedString(for: box))
 
             try solver.add(constraint: box.height.variable >= 0)
             try solver.add(constraint: box.height.variable >= size.height)

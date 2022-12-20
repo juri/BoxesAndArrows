@@ -1,5 +1,6 @@
 @testable import BoxesAndArrows
 import Cassowary
+import DrawCocoa
 import XCTest
 
 final class BoxesAndArrowsTests: XCTestCase {
@@ -14,7 +15,9 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.connect(foo, to: zap)
         graph.connect(bar, to: zap)
 
-        let solver = try graph.makeSolver()
+        let graphics = GraphicsCocoa()
+
+        let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: bar.top.variable == foo.bottom.variable + 20.0)
         try solver.add(constraint: bar.left.variable == foo.left.variable)
         try solver.add(constraint: zap.left.variable == foo.right.variable + 20.0)
@@ -48,19 +51,9 @@ final class BoxesAndArrowsTests: XCTestCase {
             print("height ", box.height.variable.value)
         }
 
-        let image = draw(graph: graph)
+        let image = draw(graph: graph, graphics: graphics)
         print("got image:", image)
         print()
-
-//        var accessGrid = AccessGrid(graph: graph, sourceBox: foo, targetBox: bar, cellSize: 9)
-//        let accessCoordinateInFoo = accessGrid.coordinate(in: foo.frame)
-//        let accessInFoo = accessGrid[accessCoordinateInFoo]
-//        print("accessCoordinateInFoo", accessCoordinateInFoo)
-//        print("accessInFoo", accessInFoo)
-//
-//        let path = accessGrid.path(from: foo.frame, to: bar.frame)
-//        print("path from foo to bar: \(path)")
-//        print()
     }
 
     func testTwoLeftToRight() throws {
@@ -73,7 +66,9 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: right)
         graph.connect(left, to: right)
 
-        let solver = try graph.makeSolver()
+        let graphics = GraphicsCocoa()
+
+        let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: left.top.variable == right.top.variable)
         try solver.add(constraint: left.top.variable == center.top.variable)
         try solver.add(constraint: left.right.variable + 30.0 == center.left.variable)
@@ -81,7 +76,7 @@ final class BoxesAndArrowsTests: XCTestCase {
 
         solver.update()
 
-        let image = draw(graph: graph)
+        let image = draw(graph: graph, graphics: graphics)
         print("got image:", image)
         print()
     }
@@ -96,7 +91,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: right)
         graph.connect(right, to: left)
 
-        let solver = try graph.makeSolver()
+        let graphics = GraphicsCocoa()
+        let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: left.top.variable == right.top.variable)
         try solver.add(constraint: left.top.variable == center.top.variable)
         try solver.add(constraint: left.right.variable + 30.0 == center.left.variable)
@@ -104,7 +100,7 @@ final class BoxesAndArrowsTests: XCTestCase {
 
         solver.update()
 
-        let image = draw(graph: graph)
+        let image = draw(graph: graph, graphics: graphics)
         print("got image:", image)
         print()
     }
@@ -119,7 +115,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: down)
         graph.connect(up, to: down)
 
-        let solver = try graph.makeSolver()
+        let graphics = GraphicsCocoa()
+        let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: up.left.variable == down.left.variable)
         try solver.add(constraint: up.left.variable == center.left.variable)
         try solver.add(constraint: up.bottom.variable + 30.0 == center.top.variable)
@@ -127,7 +124,7 @@ final class BoxesAndArrowsTests: XCTestCase {
 
         solver.update()
 
-        let image = draw(graph: graph)
+        let image = draw(graph: graph, graphics: graphics)
         print("got image:", image)
         print()
     }
@@ -142,7 +139,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: down)
         graph.connect(down, to: up)
 
-        let solver = try graph.makeSolver()
+        let graphics = GraphicsCocoa()
+        let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: up.left.variable == down.left.variable)
         try solver.add(constraint: up.left.variable == center.left.variable)
         try solver.add(constraint: up.bottom.variable + 30.0 == center.top.variable)
@@ -150,7 +148,7 @@ final class BoxesAndArrowsTests: XCTestCase {
 
         solver.update()
 
-        let image = draw(graph: graph)
+        let image = draw(graph: graph, graphics: graphics)
         print("got image:", image)
         print()
     }

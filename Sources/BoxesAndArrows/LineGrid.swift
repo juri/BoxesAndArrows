@@ -1,3 +1,4 @@
+import Draw
 import Foundation
 
 /// `ConnectionPointRegister` tracks box connection point usage.
@@ -71,6 +72,16 @@ struct AccessGrid {
         let top = CGFloat(coordinate.y) * cellSide
         let left = CGFloat(coordinate.x) * cellSide
         return CGPoint(
+            x: left + cellSide / 2.0,
+            y: top + cellSide / 2.0
+        )
+    }
+
+    func point(at coordinate: Coordinate) -> Point {
+        let cellSide = Double(self.cellSide)
+        let top = Double(coordinate.y) * cellSide
+        let left = Double(coordinate.x) * cellSide
+        return Point(
             x: left + cellSide / 2.0,
             y: top + cellSide / 2.0
         )

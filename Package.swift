@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "BoxesAndArrows",
+    platforms: [.macOS(.v13)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -24,6 +25,18 @@ let package = Package(
             dependencies: [
                 .product(name: "cassowary", package: "cassowary"),
                 .product(name: "Tagged", package: "swift-tagged"),
+                "Draw",
+                "DrawCocoa",
+            ]
+        ),
+        .target(
+            name: "Draw",
+            dependencies: []
+        ),
+        .target(
+            name: "DrawCocoa",
+            dependencies: [
+                "Draw",
             ]
         ),
         .testTarget(
