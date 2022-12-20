@@ -42,13 +42,24 @@ public struct Rectangle {
     }
 }
 
+public struct Color {
+    public var red: Double
+    public var green: Double
+    public var blue: Double
+    public var alpha: Double
+}
+
+extension Color {
+    public static let white = Color(red: 1, green: 1, blue: 1, alpha: 1)
+}
+
 public enum DrawCommand {
     case addLine(Point)
     case addRect(Rectangle)
     case draw(text: AttributedString, point: Point)
     case fill([Rectangle])
     case move(Point)
-    case setFill(NSColor)
+    case setFill(Color)
     case strokePath
 }
 

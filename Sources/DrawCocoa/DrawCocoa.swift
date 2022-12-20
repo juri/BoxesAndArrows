@@ -85,7 +85,7 @@ extension DrawCocoa: Drawing {
             context.move(to: CGPoint(point))
 
         case let .setFill(color):
-            color.setFill()
+            NSColor(color).setFill()
 
         case .strokePath:
             context.strokePath()
@@ -114,5 +114,11 @@ extension Draw.Size {
 extension CGRect {
     init(_ rect: Draw.Rectangle) {
         self.init(origin: .init(rect.origin), size: .init(rect.size))
+    }
+}
+
+extension NSColor {
+    convenience init(_ color: Color) {
+        self.init(red: color.red, green: color.green, blue: color.blue, alpha: color.alpha)
     }
 }
