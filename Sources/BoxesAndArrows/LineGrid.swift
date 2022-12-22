@@ -90,16 +90,12 @@ struct AccessGrid {
     func canGo(from source: Coordinate, to direction: AccessDirection) -> Bool {
         switch direction {
         case .up:
-            if source.y == 0 { return false }
-            return self.canGo(from: Coordinate(x: source.x, y: source.y - 1), to: .down)
+            return self[source].up
         case .left:
-            if source.x == 0 { return false }
-            return self.canGo(from: Coordinate(x: source.x - 1, y: source.y), to: .right)
+            return self[source].left
         case .down:
-            if source.y >= self.height - 1 { return false }
             return self[source].down
         case .right:
-            if source.x >= self.width - 1 { return false }
             return self[source].right
         }
     }
@@ -226,8 +222,10 @@ extension AccessGrid {
     }
 
     struct Access {
+        var up: Bool
         var right: Bool
         var down: Bool
+        var left: Bool
         var visited: Bool = false
         var distance: Int = .max
     }
@@ -258,7 +256,9 @@ extension AccessGrid {
         let graphFrame = graph.frame
         let gridWidth = Int(ceil(graph.frame.width / CGFloat(cellSize)))
         let gridHeight = Int(ceil(graph.frame.height / CGFloat(cellSize)))
-        var cells = [Access](repeating: Access(right: false, down: false), count: gridHeight * gridWidth)
+        var cells = [Access](
+            repeating: Access(up: false, right: false, down: false, left: false), count: gridHeight * gridWidth
+        )
 
         func rectIntersectsBox(_ rect: CGRect) -> Bool {
             for (boxID, box) in graph.boxes {
@@ -268,30 +268,47 @@ extension AccessGrid {
             return false
         }
 
-        for y in stride(from: Int(floor(graphFrame.minY)), to: Int(ceil(graphFrame.maxY)), by: cellSize) {
-            for x in stride(from: Int(floor(graphFrame.minX)), to: Int(ceil(graphFrame.maxX)), by: cellSize) {
+        let yStart = Int(floor(graphFrame.minY))
+        let xStart = Int(floor(graphFrame.minX))
+
+        for y in stride(from: yStart, to: Int(ceil(graphFrame.maxY)), by: cellSize) {
+            for x in stride(from: xStart, to: Int(ceil(graphFrame.maxX)), by: cellSize) {
                 let gridX = x / cellSize
                 let gridY = y / cellSize
                 let index = gridY * gridWidth + gridX
                 let cellRect = CGRect(origin: .init(x: x, y: y), size: .init(width: cellSize, height: cellSize))
-                var canGoRight = false
-                if gridX < gridWidth - 1 {
-                    var next = cellRect
-                    next.origin.x += CGFloat(cellSize)
-                    if !rectIntersectsBox(cellRect) && !rectIntersectsBox(next) {
-                        canGoRight = true
-                    }
-                }
-                var canGoDown = false
-                if gridY < gridHeight - 1 {
-                    var next = cellRect
-                    next.origin.y += CGFloat(cellSize)
-                    if !rectIntersectsBox(cellRect) && !rectIntersectsBox(next) {
-                        canGoDown = true
-                    }
+
+                if gridY <= yStart {
+                    cells[index].up = false
+                } else {
+                    var neighbor = cellRect
+                    neighbor.origin.y -= CGFloat(cellSize)
+                    cells[index].up = !rectIntersectsBox(neighbor)
                 }
 
-                cells[index] = Access(right: canGoRight, down: canGoDown)
+                if gridX >= gridWidth - 1 {
+                    cells[index].right = false
+                } else {
+                    var neighbor = cellRect
+                    neighbor.origin.x += CGFloat(cellSize)
+                    cells[index].right = !rectIntersectsBox(neighbor)
+                }
+
+                if gridY >= gridHeight - 1 {
+                    cells[index].down = false
+                } else {
+                    var neighbor = cellRect
+                    neighbor.origin.y += CGFloat(cellSize)
+                    cells[index].down = !rectIntersectsBox(neighbor)
+                }
+
+                if gridX <= xStart {
+                    cells[index].left = false
+                } else {
+                    var neighbor = cellRect
+                    neighbor.origin.x -= CGFloat(cellSize)
+                    cells[index].left = !rectIntersectsBox(neighbor)
+                }
             }
         }
 
