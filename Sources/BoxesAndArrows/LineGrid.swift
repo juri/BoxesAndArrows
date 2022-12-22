@@ -170,7 +170,7 @@ struct AccessGrid {
 
     /// Calculate path from `source` to `target` avoiding other boxes.
     ///
-    /// Uses Djikstra to to calculate the route.
+    /// Uses Dijkstra to to calculate the route.
     mutating func path(
         from source: CGRect,
         to target: CGRect,
