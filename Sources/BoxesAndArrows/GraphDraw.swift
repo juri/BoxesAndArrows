@@ -107,7 +107,17 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         }
 
         commands.append(.move(lineStart))
-        for coordinate in pathTail {
+        let simplifiedTail = pathTail.reduce(into: [AccessGrid.Coordinate]()) { acc, coord in
+            if let p0 = acc.last,
+               let p1 = acc.dropLast(1).last,
+               (coord.x == p0.x && coord.x == p1.x) || (coord.y == p0.y && coord.y == p1.y)
+            {
+                acc[acc.endIndex - 1] = coord
+            } else {
+                acc.append(coord)
+            }
+        }
+        for coordinate in simplifiedTail {
             commands.append(.addLine(accessGrid.point(at: coordinate)))
         }
         commands.append(.addLine(lineEnd))
