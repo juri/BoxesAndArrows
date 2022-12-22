@@ -262,8 +262,26 @@ extension AccessGrid {
 
         func rectIntersectsBox(_ rect: CGRect) -> Bool {
             for (boxID, box) in graph.boxes {
-                if boxID == sourceBox.id || boxID == targetBox.id { continue }
-                if box.frame.insetBy(dx: -10, dy: -10).intersects(rect) { return true }
+                if boxID == targetBox.id { continue }
+                if (boxID == sourceBox.id || boxID == targetBox.id) && box.frame.intersects(rect) {
+                    return true
+                }
+                if box.frame.insetBy(dx: -1, dy: -1).intersects(rect) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        func rectInsideBox(_ rect: CGRect) -> Bool {
+            for (boxID, box) in graph.boxes {
+                if boxID == targetBox.id { continue }
+                if (boxID == sourceBox.id || boxID == targetBox.id) && box.frame.contains(rect) {
+                    return true
+                }
+                if box.frame.insetBy(dx: -1, dy: -1).contains(rect) {
+                    return true
+                }
             }
             return false
         }
@@ -275,15 +293,16 @@ extension AccessGrid {
             for x in stride(from: xStart, to: Int(ceil(graphFrame.maxX)), by: cellSize) {
                 let gridX = x / cellSize
                 let gridY = y / cellSize
-                let index = gridY * gridWidth + gridX
                 let cellRect = CGRect(origin: .init(x: x, y: y), size: .init(width: cellSize, height: cellSize))
+                let index = gridY * gridWidth + gridX
+                let thisInsideBox = rectInsideBox(cellRect)
 
                 if gridY <= yStart {
                     cells[index].up = false
                 } else {
                     var neighbor = cellRect
                     neighbor.origin.y -= CGFloat(cellSize)
-                    cells[index].up = !rectIntersectsBox(neighbor)
+                    cells[index].up = (thisInsideBox && !rectInsideBox(neighbor)) || !rectIntersectsBox(neighbor)
                 }
 
                 if gridX >= gridWidth - 1 {
@@ -291,7 +310,7 @@ extension AccessGrid {
                 } else {
                     var neighbor = cellRect
                     neighbor.origin.x += CGFloat(cellSize)
-                    cells[index].right = !rectIntersectsBox(neighbor)
+                    cells[index].right = (thisInsideBox && !rectInsideBox(neighbor)) || !rectIntersectsBox(neighbor)
                 }
 
                 if gridY >= gridHeight - 1 {
@@ -299,7 +318,7 @@ extension AccessGrid {
                 } else {
                     var neighbor = cellRect
                     neighbor.origin.y += CGFloat(cellSize)
-                    cells[index].down = !rectIntersectsBox(neighbor)
+                    cells[index].down = (thisInsideBox && !rectInsideBox(neighbor)) || !rectIntersectsBox(neighbor)
                 }
 
                 if gridX <= xStart {
@@ -307,7 +326,7 @@ extension AccessGrid {
                 } else {
                     var neighbor = cellRect
                     neighbor.origin.x -= CGFloat(cellSize)
-                    cells[index].left = !rectIntersectsBox(neighbor)
+                    cells[index].left = (thisInsideBox && !rectInsideBox(neighbor)) || !rectIntersectsBox(neighbor)
                 }
             }
         }
