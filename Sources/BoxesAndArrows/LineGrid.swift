@@ -198,7 +198,7 @@ struct AccessGrid {
             }
             self[smallestDistance.0].visited = true
             for neighbor in self.neighbors(of: smallestDistance.0) where !self[neighbor].visited {
-                let alt = smallestDistance.1.distance + 1
+                let alt = (smallestDistance.1.distance == .max ? 0 : smallestDistance.1.distance) + 1
                 if alt < self[neighbor].distance {
                     self[neighbor].distance = alt
                     prev[neighbor] = smallestDistance.0
