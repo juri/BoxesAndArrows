@@ -334,3 +334,83 @@ extension AccessGrid {
         self.init(cells: cells, width: gridWidth, height: gridHeight, cellSide: cellSize)
     }
 }
+
+extension AccessGrid {
+    func picture() -> String {
+        var output = [String]()
+        let space = " "
+        let dimensionWidth = max(String(self.width).count, String(self.height).count)
+        let width = dimensionWidth + 2
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 0
+        formatter.formatWidth = dimensionWidth
+        for y in 0 ..< self.height {
+            var line = ""
+            for x in 0 ..< self.width {
+                let cell = self[Coordinate(x: x, y: y)]
+
+                line.append("┌")
+                if cell.up {
+                    line.append(String(repeating: "┄", count: width))
+                } else {
+                    line.append(String(repeating: "━", count: width))
+                }
+                line.append("┐")
+            }
+            line.append("\n")
+            for x in 0 ..< self.width {
+                let cell = self[Coordinate(x: x, y: y)]
+                if cell.left {
+                    line.append("┆")
+                } else {
+                    line.append("┃")
+                }
+
+                line.append(space)
+                line.append(formatter.string(for: x)!)
+                line.append(space)
+
+                if cell.right {
+                    line.append("┆")
+                } else {
+                    line.append("┃")
+                }
+            }
+            line.append("\n")
+            for x in 0 ..< self.width {
+                let cell = self[Coordinate(x: x, y: y)]
+                if cell.left {
+                    line.append("┆")
+                } else {
+                    line.append("┃")
+                }
+
+                line.append(space)
+                line.append(formatter.string(for: y)!)
+                line.append(space)
+
+                if cell.right {
+                    line.append("┆")
+                } else {
+                    line.append("┃")
+                }
+            }
+            line.append("\n")
+
+            for x in 0 ..< self.width {
+                let cell = self[Coordinate(x: x, y: y)]
+
+                line.append("└")
+                if cell.down {
+                    line.append(String(repeating: "┄", count: width))
+                } else {
+                    line.append(String(repeating: "━", count: width))
+                }
+                line.append("┘")
+            }
+            line.append("\n")
+            output.append(line)
+        }
+        return output.joined()
+    }
+}
