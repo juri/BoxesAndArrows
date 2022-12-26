@@ -182,7 +182,7 @@ struct AccessGrid {
         }
         var prev = [Coordinate: Coordinate]()
         while case let available = coordinates.filter({ !self[$0].visited }), let firstAvailable = available.first {
-            let smallestDistance = available
+            let (closestCoordinate, closestAccess) = available
                 .dropFirst()
                 .reduce((firstAvailable, self[firstAvailable])) { smallestDistance, coordinate in
                     let coordinateAccess = self[coordinate]
@@ -191,15 +191,15 @@ struct AccessGrid {
                     }
                     return smallestDistance
                 }
-            if smallestDistance.0 == tc {
+            if closestCoordinate == tc {
                 break
             }
-            self[smallestDistance.0].visited = true
-            for neighbor in self.neighbors(of: smallestDistance.0) where !self[neighbor].visited {
-                let alt = (smallestDistance.1.distance == .max ? 0 : smallestDistance.1.distance) + 1
+            self[closestCoordinate].visited = true
+            for neighbor in self.neighbors(of: closestCoordinate) where !self[neighbor].visited {
+                let alt = (closestAccess.distance == .max ? 0 : closestAccess.distance) + 1
                 if alt < self[neighbor].distance {
                     self[neighbor].distance = alt
-                    prev[neighbor] = smallestDistance.0
+                    prev[neighbor] = closestCoordinate
                 }
             }
         }
