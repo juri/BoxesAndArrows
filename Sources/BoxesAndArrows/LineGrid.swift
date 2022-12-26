@@ -24,6 +24,7 @@ struct AccessGrid {
     let width: Int
     let height: Int
     let cellSide: Int
+    let rectMargin: Double
 
     subscript(coord: Coordinate) -> Access {
         get {
@@ -254,7 +255,7 @@ extension AccessGrid.Coordinate {
 }
 
 extension AccessGrid {
-    init(graph: Graph, sourceBox: Box, targetBox: Box, cellSize: Int) {
+    init(graph: Graph, sourceBox: Box, targetBox: Box, cellSize: Int, rectMargin: Double) {
         let graphFrame = graph.frame
         let gridWidth = Int(ceil(graph.frame.width / CGFloat(cellSize)))
         let gridHeight = Int(ceil(graph.frame.height / CGFloat(cellSize)))
@@ -268,7 +269,7 @@ extension AccessGrid {
                 if (boxID == sourceBox.id || boxID == targetBox.id) && box.frame.intersects(rect) {
                     return true
                 }
-                if box.frame.insetBy(dx: -1, dy: -1).intersects(rect) {
+                if box.frame.insetBy(dx: -rectMargin, dy: -rectMargin).intersects(rect) {
                     return true
                 }
             }
@@ -276,16 +277,20 @@ extension AccessGrid {
         }
 
         func rectInsideBox(_ rect: CGRect) -> Bool {
+            containingBox(rect) != nil
+        }
+
+        func containingBox(_ rect: CGRect) -> Box? {
             for (boxID, box) in graph.boxes {
                 if boxID == targetBox.id { continue }
                 if (boxID == sourceBox.id || boxID == targetBox.id) && box.frame.contains(rect) {
-                    return true
+                    return box
                 }
-                if box.frame.insetBy(dx: -1, dy: -1).contains(rect) {
-                    return true
+                if box.frame.insetBy(dx: -rectMargin, dy: -rectMargin).contains(rect) {
+                    return box
                 }
             }
-            return false
+            return nil
         }
 
         let yStart = Int(floor(graphFrame.minY))
@@ -296,11 +301,30 @@ extension AccessGrid {
                 let gridX = x / cellSize
                 let gridY = y / cellSize
                 let cellRect = CGRect(origin: .init(x: x, y: y), size: .init(width: cellSize, height: cellSize))
+                let cellCenter = CGPoint(
+                    x: cellRect.origin.x + cellRect.size.width / 2.0,
+                    y: cellRect.origin.y + cellRect.size.height / 2.0
+                )
                 let index = gridY * gridWidth + gridX
+                let boxContainingCell = containingBox(cellRect)
+                let outsideDirection = boxContainingCell.map { box in
+                    let upDistance = (AccessDirection.up, cellCenter.y - box.frame.minY, box.frame.maxX - box.frame.minX)
+                    let downDistance = (AccessDirection.down, box.frame.maxY - cellCenter.y, box.frame.maxX - box.frame.minX)
+                    let leftDistance = (AccessDirection.left, cellCenter.x - box.frame.minX, box.frame.maxY - box.frame.minY)
+                    let rightDistance = (AccessDirection.right, box.frame.maxX - cellCenter.x, box.frame.maxY - box.frame.minY)
+                    let directions = [upDistance, downDistance, leftDistance, rightDistance]
+                        .sorted(by: {
+                            guard $0.1 == $1.1 else { return $0.1 < $1.1 }
+                            return $0.2 > $1.2
+                        })
+                    return directions[0].0
+                }
                 let thisInsideBox = rectInsideBox(cellRect)
 
                 if gridY <= yStart {
                     cells[index].up = false
+                } else if outsideDirection == .up {
+                    cells[index].up = true
                 } else {
                     var neighbor = cellRect
                     neighbor.origin.y -= CGFloat(cellSize)
@@ -309,6 +333,8 @@ extension AccessGrid {
 
                 if gridX >= gridWidth - 1 {
                     cells[index].right = false
+                } else if outsideDirection == .right {
+                    cells[index].right = true
                 } else {
                     var neighbor = cellRect
                     neighbor.origin.x += CGFloat(cellSize)
@@ -317,6 +343,8 @@ extension AccessGrid {
 
                 if gridY >= gridHeight - 1 {
                     cells[index].down = false
+                } else if outsideDirection == .down {
+                    cells[index].down = true
                 } else {
                     var neighbor = cellRect
                     neighbor.origin.y += CGFloat(cellSize)
@@ -325,6 +353,8 @@ extension AccessGrid {
 
                 if gridX <= xStart {
                     cells[index].left = false
+                } else if outsideDirection == .left {
+                    cells[index].left = true
                 } else {
                     var neighbor = cellRect
                     neighbor.origin.x -= CGFloat(cellSize)
@@ -333,7 +363,13 @@ extension AccessGrid {
             }
         }
 
-        self.init(cells: cells, width: gridWidth, height: gridHeight, cellSide: cellSize)
+        self.init(
+            cells: cells,
+            width: gridWidth,
+            height: gridHeight,
+            cellSide: cellSize,
+            rectMargin: rectMargin
+        )
     }
 }
 

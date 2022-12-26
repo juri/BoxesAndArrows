@@ -27,14 +27,15 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
     }
 
     let connectionPointRegister = ConnectionPointRegister()
-    for arrow in graph.arrows {
+    for (counter, arrow) in zip(1..., graph.arrows) {
         let source = graph.boxes[arrow.source]!
         let target = graph.boxes[arrow.target]!
         var accessGrid = AccessGrid(
             graph: graph,
             sourceBox: source,
             targetBox: target,
-            cellSize: 5
+            cellSize: 5,
+            rectMargin: Double(counter) * 4.0
         )
         let path = accessGrid.path(
             from: source.frame,

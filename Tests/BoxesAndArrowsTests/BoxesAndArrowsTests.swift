@@ -18,9 +18,9 @@ final class BoxesAndArrowsTests: XCTestCase {
         let graphics = GraphicsCocoa()
 
         let solver = try graph.makeSolver(graphics: graphics)
-        try solver.add(constraint: bar.top.variable == foo.bottom.variable + 20.0)
+        try solver.add(constraint: bar.top.variable == foo.bottom.variable + 80.0)
         try solver.add(constraint: bar.left.variable == foo.left.variable)
-        try solver.add(constraint: zap.left.variable == foo.right.variable + 20.0)
+        try solver.add(constraint: zap.left.variable == foo.right.variable + 80.0)
         try solver.add(constraint: zap.top.variable == foo.bottom.variable)
 
         solver.update()
@@ -71,8 +71,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: left.top.variable == right.top.variable)
         try solver.add(constraint: left.top.variable == center.top.variable)
-        try solver.add(constraint: left.right.variable + 30.0 == center.left.variable)
-        try solver.add(constraint: center.right.variable + 30.0 == right.left.variable)
+        try solver.add(constraint: left.right.variable + 40.0 == center.left.variable)
+        try solver.add(constraint: center.right.variable + 40.0 == right.left.variable)
 
         solver.update()
 
@@ -95,8 +95,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: left.top.variable == right.top.variable)
         try solver.add(constraint: left.top.variable == center.top.variable)
-        try solver.add(constraint: left.right.variable + 30.0 == center.left.variable)
-        try solver.add(constraint: center.right.variable + 30.0 == right.left.variable)
+        try solver.add(constraint: left.right.variable + 40.0 == center.left.variable)
+        try solver.add(constraint: center.right.variable + 40.0 == right.left.variable)
 
         solver.update()
 
@@ -119,8 +119,41 @@ final class BoxesAndArrowsTests: XCTestCase {
         let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: up.left.variable == down.left.variable)
         try solver.add(constraint: up.left.variable == center.left.variable)
-        try solver.add(constraint: up.bottom.variable + 30.0 == center.top.variable)
-        try solver.add(constraint: center.bottom.variable + 30.0 == down.top.variable)
+        try solver.add(constraint: up.bottom.variable + 40.0 == center.top.variable)
+        try solver.add(constraint: center.bottom.variable + 40.0 == down.top.variable)
+
+        solver.update()
+
+        let image = draw(graph: graph, graphics: graphics)
+        print("got image:", image)
+        print()
+    }
+
+    func testUpToDownMultiple() throws {
+        var graph = Graph()
+        let box1 = Box(label: "box1")
+        let box2 = Box(label: "box2")
+        let box3 = Box(label: "box3")
+        let box4 = Box(label: "box4")
+        let box5 = Box(label: "box5")
+        graph.add(box: box1)
+        graph.add(box: box2)
+        graph.add(box: box3)
+        graph.add(box: box4)
+        graph.add(box: box5)
+        graph.connect(box1, to: box4, targetHead: .filledVee)
+        graph.connect(box2, to: box5, targetHead: .filledVee)
+
+        let graphics = GraphicsCocoa()
+        let solver = try graph.makeSolver(graphics: graphics)
+        try solver.add(constraint: box1.left.variable == box2.left.variable)
+        try solver.add(constraint: box1.left.variable == box3.left.variable)
+        try solver.add(constraint: box1.left.variable == box4.left.variable)
+        try solver.add(constraint: box1.left.variable == box5.left.variable)
+        try solver.add(constraint: box1.bottom.variable + 40.0 == box2.top.variable)
+        try solver.add(constraint: box2.bottom.variable + 40.0 == box3.top.variable)
+        try solver.add(constraint: box3.bottom.variable + 40.0 == box4.top.variable)
+        try solver.add(constraint: box4.bottom.variable + 40.0 == box5.top.variable)
 
         solver.update()
 
@@ -143,8 +176,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         let solver = try graph.makeSolver(graphics: graphics)
         try solver.add(constraint: up.left.variable == down.left.variable)
         try solver.add(constraint: up.left.variable == center.left.variable)
-        try solver.add(constraint: up.bottom.variable + 30.0 == center.top.variable)
-        try solver.add(constraint: center.bottom.variable + 30.0 == down.top.variable)
+        try solver.add(constraint: up.bottom.variable + 40.0 == center.top.variable)
+        try solver.add(constraint: center.bottom.variable + 40.0 == down.top.variable)
 
         solver.update()
 
