@@ -81,6 +81,9 @@ extension DrawCocoa: Drawing {
         case let .fill(rects):
             context.fill(rects.map(CGRect.init(_:)))
 
+        case .fillPath:
+            context.fillPath()
+
         case let .move(point):
             context.move(to: CGPoint(point))
 

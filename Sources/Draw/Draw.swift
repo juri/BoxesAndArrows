@@ -58,6 +58,7 @@ public enum DrawCommand {
     case addRect(Rectangle)
     case draw(text: AttributedString, point: Point)
     case fill([Rectangle])
+    case fillPath
     case move(Point)
     case setFill(Color)
     case strokePath
