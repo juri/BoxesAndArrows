@@ -71,6 +71,7 @@ public struct Arrow {
 
 public enum ArrowHead {
     case line
+    case filledVee
 }
 
 extension Arrow {
@@ -119,8 +120,8 @@ public struct Graph {
         self.boxes[box.id] = box
     }
 
-    mutating func connect(_ source: Box, to target: Box) {
-        self.arrows.append(.init(source: source, target: target))
+    mutating func connect(_ source: Box, to target: Box, sourceHead: ArrowHead = .line, targetHead: ArrowHead = .line) {
+        self.arrows.append(.init(source: source, sourceHead: sourceHead, target: target, targetHead: targetHead))
     }
 
     var frame: CGRect {

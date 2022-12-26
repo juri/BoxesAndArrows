@@ -122,7 +122,50 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         }
         commands.append(.addLine(lineEnd))
         commands.append(.strokePath)
+
+        switch arrow.targetHead {
+        case .line:
+            break
+        case .filledVee:
+            guard let last = simplifiedTail.last else { break }
+            commands.append(contentsOf: filledVeeCommands(point: lineEnd, previous: accessGrid.point(at: last)))
+        }
     }
 
     return graphics.makeDrawing(size: graph.frameRectangle.size).draw(commands)
+}
+
+func filledVeeCommands(
+    point: Point,
+    previous: Point
+) -> [DrawCommand] {
+    let arrowLength = 4.0
+    let arrowWidth = 3.0
+
+    var output: [DrawCommand] = [.move(point)]
+
+    if point.x == previous.x && point.y < previous.y {
+        let base = point.y + arrowLength
+        output.append(.addLine(.init(x: point.x - arrowWidth, y: base)))
+        output.append(.addLine(.init(x: point.x + arrowWidth, y: base)))
+    } else if point.x == previous.x && point.y > previous.y {
+        let base = point.y - arrowLength
+        output.append(.addLine(.init(x: point.x - arrowWidth, y: base)))
+        output.append(.addLine(.init(x: point.x + arrowWidth, y: base)))
+    } else if point.y == previous.y && point.x < previous.x {
+        let base = point.x + arrowLength
+        output.append(.addLine(.init(x: base, y: point.y - arrowWidth)))
+        output.append(.addLine(.init(x: base, y: point.y + arrowWidth)))
+    } else if point.y == previous.y && point.x > previous.x {
+        let base = point.x - arrowLength
+        output.append(.addLine(.init(x: base, y: point.y - arrowWidth)))
+        output.append(.addLine(.init(x: base, y: point.y + arrowWidth)))
+    } else {
+        return []
+    }
+
+    output.append(.addLine(point))
+    output.append(.fillPath)
+
+    return output
 }
