@@ -182,13 +182,15 @@ struct AccessGrid {
         }
         var prev = [Coordinate: Coordinate]()
         while case let available = coordinates.filter({ !self[$0].visited }), let firstAvailable = available.first {
-            let smallestDistance = available.dropFirst().reduce((firstAvailable, self[firstAvailable])) { smallestDistance, coordinate in
-                let coordinateAccess = self[coordinate]
-                if coordinateAccess.distance < smallestDistance.1.distance {
-                    return (coordinate, coordinateAccess)
+            let smallestDistance = available
+                .dropFirst()
+                .reduce((firstAvailable, self[firstAvailable])) { smallestDistance, coordinate in
+                    let coordinateAccess = self[coordinate]
+                    if coordinateAccess.distance < smallestDistance.1.distance {
+                        return (coordinate, coordinateAccess)
+                    }
+                    return smallestDistance
                 }
-                return smallestDistance
-            }
             if smallestDistance.0 == tc {
                 break
             }
