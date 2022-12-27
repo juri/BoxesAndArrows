@@ -1,5 +1,4 @@
 import Cocoa
-import CoreGraphics
 import Draw
 
 func attributedString(for box: Box) -> AttributedString {

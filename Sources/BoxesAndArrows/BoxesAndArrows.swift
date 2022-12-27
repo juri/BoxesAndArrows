@@ -1,5 +1,4 @@
 import Cassowary
-import CoreGraphics
 import Draw
 import Tagged
 
