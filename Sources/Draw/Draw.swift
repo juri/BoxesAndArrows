@@ -14,11 +14,21 @@ public struct Point {
     }
 }
 
+extension Point {
+    public init(
+        x: Int,
+        y: Int
+    ) {
+        self.x = Double(x)
+        self.y = Double(y)
+    }
+}
+
 public struct Size {
     public var width: Double
     public var height: Double
 
-    public static let zero = Size(width: .zero, height: .zero)
+    public static let zero = Size(width: Double.zero, height: Double.zero)
 
     public init(
         width: Double,
@@ -26,6 +36,16 @@ public struct Size {
     ) {
         self.width = width
         self.height = height
+    }
+}
+
+extension Size {
+    public init(
+        width: Int,
+        height: Int
+    ) {
+        self.width = Double(width)
+        self.height = Double(height)
     }
 }
 
@@ -39,6 +59,30 @@ public struct Rectangle {
     ) {
         self.origin = origin
         self.size = size
+    }
+}
+
+extension Rectangle {
+    @inlinable public var minX: Double { self.origin.x }
+    @inlinable public var minY: Double { self.origin.y }
+    @inlinable public var maxX: Double { self.minX + self.width }
+    @inlinable public var maxY: Double { self.minY + self.height }
+    @inlinable public var width: Double { self.size.width }
+    @inlinable public var height: Double { self.size.height }
+
+    public func insetBy(_ amount: Double) -> Rectangle {
+        Rectangle(
+            origin: Point(x: self.minX + amount, y: self.minY + amount),
+            size: Size(width: self.width - amount * 2.0, height: self.height - amount * 2.0)
+        )
+    }
+
+    public func intersects(_ other: Rectangle) -> Bool {
+        self.maxX >= other.minX && self.minX <= other.maxX && self.maxY >= other.minY && self.minY <= other.maxY
+    }
+
+    public func contains(_ other: Rectangle) -> Bool {
+        self.maxX >= other.maxX && self.minX <= other.minX && self.minY <= other.minY && self.maxY >= other.maxY
     }
 }
 

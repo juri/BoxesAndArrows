@@ -37,8 +37,8 @@ struct AccessGrid {
         coordinate.y * self.width + coordinate.x
     }
 
-    func coordinate(in rect: CGRect) -> [Coordinate] {
-        let cellSide = CGFloat(self.cellSide)
+    func coordinate(in rect: Rectangle) -> [Coordinate] {
+        let cellSide = Double(self.cellSide)
         let top = Int(ceil(rect.minY / cellSide))
         let left = Int(ceil(rect.minX / cellSide))
 
@@ -97,8 +97,8 @@ struct AccessGrid {
     }
 
     func connectionPointCandidates(
-        from source: CGRect,
-        to target: CGRect
+        from source: Rectangle,
+        to target: Rectangle
     ) -> (source: [Coordinate], target: [Coordinate]) {
         var allSourceCoordinates = self.coordinate(in: source)
         var allTargetCoordinates = self.coordinate(in: target)
@@ -264,30 +264,30 @@ extension AccessGrid {
             repeating: Access(up: false, right: false, down: false, left: false), count: gridHeight * gridWidth
         )
 
-        func rectIntersectsBox(_ rect: CGRect) -> Bool {
+        func rectIntersectsBox(_ rect: Rectangle) -> Bool {
             for (boxID, box) in graph.boxes {
                 if boxID == targetBox.id { continue }
                 if (boxID == sourceBox.id || boxID == targetBox.id) && box.frame.intersects(rect) {
                     return true
                 }
-                if box.frame.insetBy(dx: -rectMargin, dy: -rectMargin).intersects(rect) {
+                if box.frame.insetBy(-rectMargin).intersects(rect) {
                     return true
                 }
             }
             return false
         }
 
-        func rectInsideBox(_ rect: CGRect) -> Bool {
+        func rectInsideBox(_ rect: Rectangle) -> Bool {
             containingBox(rect) != nil
         }
 
-        func containingBox(_ rect: CGRect) -> Box? {
+        func containingBox(_ rect: Rectangle) -> Box? {
             for (boxID, box) in graph.boxes {
                 if boxID == targetBox.id { continue }
                 if (boxID == sourceBox.id || boxID == targetBox.id) && box.frame.contains(rect) {
                     return box
                 }
-                if box.frame.insetBy(dx: -rectMargin, dy: -rectMargin).contains(rect) {
+                if box.frame.insetBy(-rectMargin).contains(rect) {
                     return box
                 }
             }
@@ -301,7 +301,7 @@ extension AccessGrid {
             for x in stride(from: xStart, to: Int(ceil(graphFrame.maxX)), by: cellSize) {
                 let gridX = x / cellSize
                 let gridY = y / cellSize
-                let cellRect = CGRect(origin: .init(x: x, y: y), size: .init(width: cellSize, height: cellSize))
+                let cellRect = Rectangle(origin: .init(x: x, y: y), size: .init(width: cellSize, height: cellSize))
                 let cellCenter = CGPoint(
                     x: cellRect.origin.x + cellRect.size.width / 2.0,
                     y: cellRect.origin.y + cellRect.size.height / 2.0

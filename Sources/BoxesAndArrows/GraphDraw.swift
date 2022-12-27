@@ -21,8 +21,8 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
 
     for box in graph.boxes.values {
         let attributedString = attributedString(for: box)
-        commands.append(.draw(text: attributedString, point: box.frameRectangle.origin))
-        commands.append(.addRect(box.frameRectangle))
+        commands.append(.draw(text: attributedString, point: box.frame.origin))
+        commands.append(.addRect(box.frame))
         commands.append(.strokePath)
     }
 
