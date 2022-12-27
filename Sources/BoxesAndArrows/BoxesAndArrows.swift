@@ -117,14 +117,7 @@ public struct Graph {
         self.arrows.append(.init(source: source, sourceHead: sourceHead, target: target, targetHead: targetHead))
     }
 
-    var frame: CGRect {
-        CGRect(
-            origin: CGPoint(x: self.left.variable.value, y: self.top.variable.value),
-            size: CGSize(width: self.width.variable.value, height: self.height.variable.value)
-        )
-    }
-
-    var frameRectangle: Rectangle {
+    var frame: Rectangle {
         Rectangle(
             origin: Point(x: self.left.variable.value, y: self.top.variable.value),
             size: Size(width: self.width.variable.value, height: self.height.variable.value)

@@ -16,7 +16,7 @@ func attributedString(for box: Box) -> AttributedString {
 func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
     var commands: [DrawCommand] = [
         .setFill(.white),
-        .fill([graph.frameRectangle]),
+        .fill([graph.frame]),
     ]
 
     for box in graph.boxes.values {
@@ -130,7 +130,7 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         }
     }
 
-    return graphics.makeDrawing(size: graph.frameRectangle.size).draw(commands)
+    return graphics.makeDrawing(size: graph.frame.size).draw(commands)
 }
 
 func filledVeeCommands(
