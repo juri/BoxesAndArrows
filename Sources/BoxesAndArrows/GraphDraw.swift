@@ -38,8 +38,6 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
             rectMargin: Double(counter) * 4.0
         )
         let path = accessGrid.path(
-            from: source.frame,
-            to: target.frame,
             connectionPointRegister: connectionPointRegister
         )
         guard let path = path,

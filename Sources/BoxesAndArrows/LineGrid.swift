@@ -25,6 +25,8 @@ struct AccessGrid {
     let height: Int
     let cellSide: Int
     let rectMargin: Double
+    let sourceBox: Box
+    let targetBox: Box
 
     subscript(coord: Coordinate) -> Access {
         self.cells[self.index(for: coord)]
@@ -155,11 +157,9 @@ struct AccessGrid {
     ///
     /// Uses Dijkstra to to calculate the route.
     func path(
-        from source: CGRect,
-        to target: CGRect,
         connectionPointRegister: ConnectionPointRegister
     ) -> [Coordinate]? {
-        let (scpc, tcpc) = self.connectionPointCandidates(from: source, to: target)
+        let (scpc, tcpc) = self.connectionPointCandidates(from: self.sourceBox.frame, to: self.targetBox.frame)
         let sc = connectionPointRegister.pick(from: scpc)!
         let tc = connectionPointRegister.pick(from: tcpc)!
 
@@ -369,7 +369,9 @@ extension AccessGrid {
             width: gridWidth,
             height: gridHeight,
             cellSide: cellSize,
-            rectMargin: rectMargin
+            rectMargin: rectMargin,
+            sourceBox: sourceBox,
+            targetBox: targetBox
         )
     }
 }
