@@ -40,8 +40,7 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         let path = accessGrid.path(
             connectionPointRegister: connectionPointRegister
         )
-        guard let path = path,
-              let path0 = path.first,
+        guard let path0 = path.first,
               case var pathTail = path.dropFirst(),
               let path1 = pathTail.dropFirst().first
         else { continue }

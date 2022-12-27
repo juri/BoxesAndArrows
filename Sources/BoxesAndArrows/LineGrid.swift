@@ -158,7 +158,7 @@ struct AccessGrid {
     /// Uses Dijkstra to to calculate the route.
     func path(
         connectionPointRegister: ConnectionPointRegister
-    ) -> [Coordinate]? {
+    ) -> [Coordinate] {
         let (scpc, tcpc) = self.connectionPointCandidates(from: self.sourceBox.frame, to: self.targetBox.frame)
         let sc = connectionPointRegister.pick(from: scpc)!
         let tc = connectionPointRegister.pick(from: tcpc)!
