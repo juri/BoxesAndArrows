@@ -255,7 +255,13 @@ extension AccessGrid.Coordinate {
 }
 
 extension AccessGrid {
-    init(graph: Graph, sourceBox: Box, targetBox: Box, cellSize: Int, rectMargin: Double) {
+    init(
+        graph: Graph,
+        sourceBox: Box,
+        targetBox: Box,
+        cellSize: Int,
+        rectMargin: Double
+    ) {
         let graphFrame = graph.frame
         let gridWidth = Int(ceil(graph.frame.width / CGFloat(cellSize)))
         let gridHeight = Int(ceil(graph.frame.height / CGFloat(cellSize)))
