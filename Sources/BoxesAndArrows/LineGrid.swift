@@ -20,33 +20,19 @@ final class ConnectionPointRegister {
 /// that don't pass through boxes.
 struct AccessGrid {
     // rows of access elements: (x0, y0), (x1, y0) … (x0, y1), (x1, y1) …
-    private(set) var cells: [Access]
+    let cells: [Access]
     let width: Int
     let height: Int
     let cellSide: Int
     let rectMargin: Double
 
     subscript(coord: Coordinate) -> Access {
-        get {
-            self.cells[self.index(for: coord)]
-        }
-        set {
-            self.cells[self.index(for: coord)] = newValue
-        }
-        _modify {
-            yield &self.cells[self.index(for: coord)]
-        }
+        self.cells[self.index(for: coord)]
     }
 
     @inlinable
     func index(for coordinate: Coordinate) -> Int {
         coordinate.y * self.width + coordinate.x
-    }
-
-    mutating func zeroDistance(at coordinate: Coordinate) {
-        var cell = self[coordinate]
-        cell.distance = 0
-        self[coordinate] = cell
     }
 
     func coordinate(in rect: CGRect) -> [Coordinate] {
@@ -168,7 +154,7 @@ struct AccessGrid {
     /// Calculate path from `source` to `target` avoiding other boxes.
     ///
     /// Uses Dijkstra to to calculate the route.
-    mutating func path(
+    func path(
         from source: CGRect,
         to target: CGRect,
         connectionPointRegister: ConnectionPointRegister
@@ -177,29 +163,35 @@ struct AccessGrid {
         let sc = connectionPointRegister.pick(from: scpc)!
         let tc = connectionPointRegister.pick(from: tcpc)!
 
-        self.zeroDistance(at: sc)
+        var statuses: [Coordinate: CoordinateStatus] = [:]
+        func status(at coordinate: Coordinate) -> CoordinateStatus {
+            statuses[coordinate, default: CoordinateStatus()]
+        }
+
+        statuses[sc, default: CoordinateStatus()].distance = 0
+
         let coordinates = (0 ..< self.width).flatMap { x in
             (0 ..< self.height).map { y in Coordinate(x: x, y: y) }
         }
         var prev = [Coordinate: Coordinate]()
-        while case let available = coordinates.filter({ !self[$0].visited }), let firstAvailable = available.first {
+        while case let available = coordinates.filter({ !status(at: $0).visited }), let firstAvailable = available.first {
             let (closestCoordinate, closestAccess) = available
                 .dropFirst()
-                .reduce((firstAvailable, self[firstAvailable])) { smallestDistance, coordinate in
-                    let coordinateAccess = self[coordinate]
-                    if coordinateAccess.distance < smallestDistance.1.distance {
-                        return (coordinate, coordinateAccess)
+                .reduce((firstAvailable, status(at: firstAvailable))) { smallestDistance, coordinate in
+                    let coordinateStatus = status(at: coordinate)
+                    if coordinateStatus.distance < smallestDistance.1.distance {
+                        return (coordinate, coordinateStatus)
                     }
                     return smallestDistance
                 }
             if closestCoordinate == tc {
                 break
             }
-            self[closestCoordinate].visited = true
-            for neighbor in self.neighbors(of: closestCoordinate) where !self[neighbor].visited {
+            statuses[closestCoordinate, default: CoordinateStatus()].visited = true
+            for neighbor in self.neighbors(of: closestCoordinate) where !status(at: neighbor).visited {
                 let alt = (closestAccess.distance == .max ? 0 : closestAccess.distance) + 1
-                if alt < self[neighbor].distance {
-                    self[neighbor].distance = alt
+                if alt < status(at: neighbor).distance {
+                    statuses[neighbor, default: CoordinateStatus()].distance = alt
                     prev[neighbor] = closestCoordinate
                 }
             }
@@ -229,8 +221,6 @@ extension AccessGrid {
         var right: Bool
         var down: Bool
         var left: Bool
-        var visited: Bool = false
-        var distance: Int = .max
     }
 
     enum AccessDirection {
@@ -238,6 +228,11 @@ extension AccessGrid {
         case right
         case down
         case left
+    }
+
+    struct CoordinateStatus {
+        var visited: Bool = false
+        var distance: Int = .max
     }
 }
 

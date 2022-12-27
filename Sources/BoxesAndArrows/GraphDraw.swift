@@ -30,7 +30,7 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
     for (counter, arrow) in zip(1..., graph.arrows) {
         let source = graph.boxes[arrow.source]!
         let target = graph.boxes[arrow.target]!
-        var accessGrid = AccessGrid(
+        let accessGrid = AccessGrid(
             graph: graph,
             sourceBox: source,
             targetBox: target,
