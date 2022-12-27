@@ -56,16 +56,6 @@ struct AccessGrid {
         return coords
     }
 
-    func point(at coordinate: Coordinate) -> CGPoint {
-        let cellSide = CGFloat(self.cellSide)
-        let top = CGFloat(coordinate.y) * cellSide
-        let left = CGFloat(coordinate.x) * cellSide
-        return CGPoint(
-            x: left + cellSide / 2.0,
-            y: top + cellSide / 2.0
-        )
-    }
-
     func point(at coordinate: Coordinate) -> Point {
         let cellSide = Double(self.cellSide)
         let top = Double(coordinate.y) * cellSide
@@ -258,8 +248,8 @@ extension AccessGrid {
         rectMargin: Double
     ) {
         let graphFrame = graph.frame
-        let gridWidth = Int(ceil(graph.frame.width / CGFloat(cellSize)))
-        let gridHeight = Int(ceil(graph.frame.height / CGFloat(cellSize)))
+        let gridWidth = Int(ceil(graph.frame.width / Double(cellSize)))
+        let gridHeight = Int(ceil(graph.frame.height / Double(cellSize)))
         var cells = [Access](
             repeating: Access(up: false, right: false, down: false, left: false), count: gridHeight * gridWidth
         )
@@ -302,7 +292,7 @@ extension AccessGrid {
                 let gridX = x / cellSize
                 let gridY = y / cellSize
                 let cellRect = Rectangle(origin: .init(x: x, y: y), size: .init(width: cellSize, height: cellSize))
-                let cellCenter = CGPoint(
+                let cellCenter = Point(
                     x: cellRect.origin.x + cellRect.size.width / 2.0,
                     y: cellRect.origin.y + cellRect.size.height / 2.0
                 )
@@ -328,7 +318,7 @@ extension AccessGrid {
                     cells[index].up = true
                 } else {
                     var neighbor = cellRect
-                    neighbor.origin.y -= CGFloat(cellSize)
+                    neighbor.origin.y -= Double(cellSize)
                     cells[index].up = (thisInsideBox && !rectInsideBox(neighbor)) || !rectIntersectsBox(neighbor)
                 }
 
@@ -338,7 +328,7 @@ extension AccessGrid {
                     cells[index].right = true
                 } else {
                     var neighbor = cellRect
-                    neighbor.origin.x += CGFloat(cellSize)
+                    neighbor.origin.x += Double(cellSize)
                     cells[index].right = (thisInsideBox && !rectInsideBox(neighbor)) || !rectIntersectsBox(neighbor)
                 }
 
@@ -348,7 +338,7 @@ extension AccessGrid {
                     cells[index].down = true
                 } else {
                     var neighbor = cellRect
-                    neighbor.origin.y += CGFloat(cellSize)
+                    neighbor.origin.y += Double(cellSize)
                     cells[index].down = (thisInsideBox && !rectInsideBox(neighbor)) || !rectIntersectsBox(neighbor)
                 }
 
@@ -358,7 +348,7 @@ extension AccessGrid {
                     cells[index].left = true
                 } else {
                     var neighbor = cellRect
-                    neighbor.origin.x -= CGFloat(cellSize)
+                    neighbor.origin.x -= Double(cellSize)
                     cells[index].left = (thisInsideBox && !rectInsideBox(neighbor)) || !rectIntersectsBox(neighbor)
                 }
             }
