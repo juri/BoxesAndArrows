@@ -24,7 +24,6 @@ struct AccessGrid {
     let width: Int
     let height: Int
     let cellSide: Int
-    let rectMargin: Double
     let sourceBox: Box
     let targetBox: Box
 
@@ -359,7 +358,6 @@ extension AccessGrid {
             width: gridWidth,
             height: gridHeight,
             cellSide: cellSize,
-            rectMargin: rectMargin,
             sourceBox: sourceBox,
             targetBox: targetBox
         )
