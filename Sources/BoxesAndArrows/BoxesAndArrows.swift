@@ -2,6 +2,48 @@ import Cassowary
 import Draw
 import Tagged
 
+public struct BoxStyle {
+    public enum Tags {
+        public enum ID {}
+    }
+
+    public typealias ID = Tagged<Tags.ID, String>
+
+    public let id: ID
+    public var inherits: [ID] = []
+    public var backgroundColor: Color?
+    public var textColor: Color?
+}
+
+public struct BoxStyles {
+    var styles: [BoxStyle.ID: BoxStyle]
+
+    mutating func add(boxStyle: BoxStyle) {
+        self.styles[boxStyle.id] = boxStyle
+    }
+
+    func computed<T>(style: BoxStyle, keyPath: KeyPath<BoxStyle, T>) -> T {
+        func collect(style: BoxStyle, seen: Set<BoxStyle.ID> = []) -> T? {
+            guard !seen.contains(style.id) else { return nil }
+            var seen = seen
+            seen.insert(style.id)
+            var value = style[keyPath: keyPath]
+            for inheritID in style.inherits {
+                guard let inherit = self.styles[inheritID] else { continue }
+                guard let inheritedValue = collect(style: inherit, seen: seen) else { continue }
+                value = inheritedValue
+            }
+            return value
+        }
+        return collect(style: style) ?? style[keyPath: keyPath]
+    }
+
+    func computedStyle<T>(box: Box, keyPath: KeyPath<BoxStyle, T>) -> T? {
+        guard let styleID = box.style, let style = self.styles[styleID] else { return nil }
+        return self.computed(style: style, keyPath: keyPath)
+    }
+}
+
 public struct Box {
     public enum Tags {
         public enum ID {}
