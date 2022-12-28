@@ -53,6 +53,7 @@ public struct Box {
 
     public let id: ID
     public var label: String
+    public var style: BoxStyle.ID?
 
     var top: Anchor<Vertical>
     var centerY: Anchor<Vertical>
@@ -67,10 +68,12 @@ public struct Box {
 
     init(
         id: ID,
-        label: String
+        label: String,
+        style: BoxStyle.ID? = nil
     ) {
         self.id = id
         self.label = label
+        self.style = style
 
         self.top = Anchor(variable: Variable("\(id.rawValue).top"))
         self.centerY = Anchor(variable: Variable("\(id.rawValue).centerY"))
@@ -83,9 +86,10 @@ public struct Box {
     }
 
     init(
-        label: String
+        label: String,
+        style: BoxStyle.ID? = nil
     ) {
-        self.init(id: .init(rawValue: label), label: label)
+        self.init(id: .init(rawValue: label), label: label, style: style)
     }
 
     var frame: Rectangle {
@@ -127,6 +131,7 @@ extension Arrow {
 public struct Graph {
     public var boxes: [Box.ID: Box] = [:]
     public var arrows: [Arrow] = []
+    public var boxStyles: BoxStyles
 
     var top: Anchor<Vertical>
     var centerY: Anchor<Vertical>
@@ -148,10 +153,15 @@ public struct Graph {
         self.right = Anchor(variable: Variable("..right"))
         self.height = Anchor(variable: Variable("..height"))
         self.width = Anchor(variable: Variable("..width"))
+        self.boxStyles = BoxStyles(styles: [:])
     }
 
     mutating func add(box: Box) {
         self.boxes[box.id] = box
+    }
+
+    mutating func add(boxStyle: BoxStyle) {
+        self.boxStyles.add(boxStyle: boxStyle)
     }
 
     mutating func connect(_ source: Box, to target: Box, sourceHead: ArrowHead = .line, targetHead: ArrowHead = .line) {
