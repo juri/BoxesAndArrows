@@ -76,12 +76,22 @@ extension DrawCocoa: Drawing {
             context.addRect(CGRect(rect))
 
         case let .draw(text: text, point: point):
-            NSAttributedString(text).draw(at: CGPoint(point))
+            let transformed = text.transformingAttributes(\.textColor) { transformer in
+                guard let value = transformer.value else { return }
+                transformer.replace(
+                    with: \.foregroundColor,
+                    value: NSColor(red: value.red, green: value.green, blue: value.blue, alpha: value.alpha)
+                )
+            }
+            context.saveGState()
+            NSAttributedString(transformed).draw(at: CGPoint(point))
+            context.restoreGState()
 
         case let .fill(rects):
             context.fill(rects.map(CGRect.init(_:)))
 
         case .fillPath:
+            context.setFillColor(.black)
             context.fillPath()
 
         case let .move(point):
