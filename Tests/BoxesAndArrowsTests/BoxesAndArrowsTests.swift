@@ -164,13 +164,16 @@ final class BoxesAndArrowsTests: XCTestCase {
 
     func testDownToUp() throws {
         var graph = Graph()
-        let up = Box(label: "up")
+        let boxStyle = BoxStyle(id: "style1", textColor: .blue)
+        let up = Box(label: "up", style: boxStyle.id)
         let center = Box(label: "center")
         let down = Box(label: "down")
         graph.add(box: up)
         graph.add(box: center)
         graph.add(box: down)
         graph.connect(down, to: up, targetHead: .filledVee)
+
+        graph.add(boxStyle: boxStyle)
 
         let graphics = GraphicsCocoa()
         let solver = try graph.makeSolver(graphics: graphics)
