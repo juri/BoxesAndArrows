@@ -86,7 +86,7 @@ extension Rectangle {
     }
 }
 
-public struct Color {
+public struct Color: Hashable {
     public var red: Double
     public var green: Double
     public var blue: Double
