@@ -23,9 +23,18 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         if let textColor = graph.boxStyles.computedStyle(box: box, keyPath: \.textColor) {
             attributedString.textColor = textColor
         }
-        commands.append(.draw(text: attributedString, point: box.frame.origin))
         commands.append(.addRect(box.frame))
-        commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
+        if let backgroundColor = graph.boxStyles.computedStyle(box: box, keyPath: \.backgroundColor) {
+            commands.append(.drawPath(.fillStroke(
+                FillStrokeStyle(
+                    fill: FillStyle(color: backgroundColor),
+                    stroke: StrokeStyle(color: .black)
+                )
+            )))
+        } else {
+            commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
+        }
+        commands.append(.draw(text: attributedString, point: box.frame.origin))
     }
 
     let connectionPointRegister = ConnectionPointRegister()
