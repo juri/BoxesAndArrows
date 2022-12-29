@@ -116,9 +116,42 @@ public enum DrawCommand {
 }
 
 public enum DrawMethod {
-    case stroke
-    case fill
-    case fillStroke
+    case stroke(StrokeStyle)
+    case fill(FillStyle)
+    case fillStroke(FillStrokeStyle)
+}
+
+public struct StrokeStyle {
+    public var color: Color
+
+    public init(
+        color: Color
+    ) {
+        self.color = color
+    }
+}
+
+public struct FillStyle {
+    public var color: Color
+
+    public init(
+        color: Color
+    ) {
+        self.color = color
+    }
+}
+
+public struct FillStrokeStyle {
+    public var fill: FillStyle
+    public var stroke: StrokeStyle
+
+    public init(
+        fill: FillStyle,
+        stroke: StrokeStyle
+    ) {
+        self.fill = fill
+        self.stroke = stroke
+    }
 }
 
 public protocol Graphics<Image> {

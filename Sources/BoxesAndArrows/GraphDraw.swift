@@ -194,7 +194,7 @@ func filledVeeCommands(
     }
 
     output.append(.addLine(point))
-    output.append(.drawPath(.fill))
+    output.append(.drawPath(.fill(FillStyle(color: .black))))
 
     return output
 }

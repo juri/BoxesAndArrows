@@ -90,16 +90,18 @@ extension DrawCocoa: Drawing {
         case let .fill(rects):
             context.fill(rects.map(CGRect.init(_:)))
 
-        case let .drawPath(method):
-            context.setFillColor(.black)
-            let mode: CGPathDrawingMode = {
-                switch method {
-                case .fill: return .fill
-                case .stroke: return .stroke
-                case .fillStroke: return .fillStroke
-                }
-            }()
-            context.drawPath(using: mode)
+        case let .drawPath(.fill(style)):
+            context.setFillColor(style.color.cgColor)
+            context.drawPath(using: .fill)
+
+        case let .drawPath(.stroke(style)):
+            context.setStrokeColor(style.color.cgColor)
+            context.drawPath(using: .stroke)
+
+        case let .drawPath(.fillStroke(style)):
+            context.setFillColor(style.fill.color.cgColor)
+            context.setStrokeColor(style.stroke.color.cgColor)
+            context.drawPath(using: .fillStroke)
 
         case let .move(point):
             context.move(to: CGPoint(point))
@@ -140,5 +142,11 @@ extension CGRect {
 extension NSColor {
     convenience init(_ color: Color) {
         self.init(red: color.red, green: color.green, blue: color.blue, alpha: color.alpha)
+    }
+}
+
+extension Color {
+    var cgColor: CGColor {
+        CGColor(red: self.red, green: self.green, blue: self.blue, alpha: self.alpha)
     }
 }
