@@ -22,15 +22,15 @@ public struct BoxStyles {
         self.styles[boxStyle.id] = boxStyle
     }
 
-    func computed<T>(style: BoxStyle, keyPath: KeyPath<BoxStyle, T>) -> T {
-        func collect(style: BoxStyle, seen: Set<BoxStyle.ID> = []) -> T? {
+    func computed<T>(style: BoxStyle, keyPath: KeyPath<BoxStyle, T?>) -> T? {
+        func collect(style: BoxStyle, seen: Set<BoxStyle.ID> = []) -> T?? {
             guard !seen.contains(style.id) else { return nil }
             var seen = seen
             seen.insert(style.id)
             var value = style[keyPath: keyPath]
             for inheritID in style.inherits {
                 guard let inherit = self.styles[inheritID] else { continue }
-                guard let inheritedValue = collect(style: inherit, seen: seen) else { continue }
+                guard let inheritedValue = collect(style: inherit, seen: seen), let inheritedValue else { continue }
                 value = inheritedValue
             }
             return value
@@ -38,8 +38,10 @@ public struct BoxStyles {
         return collect(style: style) ?? style[keyPath: keyPath]
     }
 
-    func computedStyle<T>(box: Box, keyPath: KeyPath<BoxStyle, T>) -> T? {
-        guard let styleID = box.style, let style = self.styles[styleID] else { return nil }
+    func computedStyle<T>(box: Box, keyPath: KeyPath<BoxStyle, T?>) -> T? {
+        guard let styleID = box.style, let style = self.styles[styleID] else {
+            return nil
+        }
         return self.computed(style: style, keyPath: keyPath)
     }
 }

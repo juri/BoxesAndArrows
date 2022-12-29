@@ -20,7 +20,7 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
 
     for box in graph.boxes.values {
         var attributedString = attributedString(for: box)
-        if let textColor = graph.boxStyles.computedStyle(box: box, keyPath: \.textColor), let textColor {
+        if let textColor = graph.boxStyles.computedStyle(box: box, keyPath: \.textColor) {
             attributedString.textColor = textColor
         }
         commands.append(.draw(text: attributedString, point: box.frame.origin))
