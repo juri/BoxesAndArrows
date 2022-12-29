@@ -112,7 +112,6 @@ public enum DrawCommand {
     case drawPath(DrawMethod)
     case move(Point)
     case setFill(Color)
-    case strokePath
 }
 
 public enum DrawMethod {

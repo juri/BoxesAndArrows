@@ -108,9 +108,6 @@ extension DrawCocoa: Drawing {
 
         case let .setFill(color):
             NSColor(color).setFill()
-
-        case .strokePath:
-            context.strokePath()
         }
     }
 }

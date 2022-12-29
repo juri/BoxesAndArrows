@@ -25,7 +25,7 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         }
         commands.append(.draw(text: attributedString, point: box.frame.origin))
         commands.append(.addRect(box.frame))
-        commands.append(.strokePath)
+        commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
     }
 
     let connectionPointRegister = ConnectionPointRegister()
@@ -72,7 +72,7 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
             commands.append(.addLine(accessGrid.point(at: coordinate)))
         }
         commands.append(.addLine(lineEnd))
-        commands.append(.strokePath)
+        commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
 
         switch arrow.targetHead {
         case .line:
