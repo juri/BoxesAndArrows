@@ -42,68 +42,19 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         let path = accessGrid.path(
             connectionPointRegister: connectionPointRegister
         )
-        guard let path0 = path.first,
-              case var pathTail = path.dropFirst(),
-              let path1 = pathTail.dropFirst().first
-        else { continue }
-
-        let lineStart: Point
-        let pp0: Point = accessGrid.point(at: path0)
-
-        if path0.x == path1.x {
-            // vertical
-            if path0.y < path1.y {
-                // going down, will cross with bottom of box
-                lineStart = Point(x: pp0.x, y: source.frame.maxY)
-                pathTail = pathTail.drop(while: { accessGrid.point(at: $0).y < lineStart.y })
-            } else {
-                // going up, will cross with top of box
-                lineStart = Point(x: pp0.x, y: source.frame.minY)
-                pathTail = pathTail.drop(while: { accessGrid.point(at: $0).y > lineStart.y })
-            }
-        } else {
-            // horizontal
-            if path0.x < path1.x {
-                // going right, will cross with right edge of box
-                lineStart = Point(x: source.frame.maxX, y: pp0.y)
-                pathTail = pathTail.drop(while: { accessGrid.point(at: $0).x < lineStart.x })
-            } else {
-                // going left, will cross with left edge of box
-                lineStart = Point(x: source.frame.minX, y: pp0.y)
-                pathTail = pathTail.drop(while: { accessGrid.point(at: $0).x > lineStart.x })
-            }
+        guard let (start: lineStart, path: pathTail) = findLineStart(
+            path: path[...],
+            source: source.frame,
+            accessGrid: accessGrid
+        ) else {
+            continue
         }
-
-        // target end of line
-        guard let pathR0 = pathTail.last, let pathR1 = pathTail.dropLast().last else { continue }
-        let pR0p: Point = accessGrid.point(at: pathR0)
-        let lineEnd: Point
-        if pathR0.x == pathR1.x {
-            // vertical
-            if pathR1.y < pathR0.y {
-                // second to last is above last, line goes down, will cross top of box
-                lineEnd = Point(x: pR0p.x, y: target.frame.minY)
-                let lastAbove = pathTail.lastIndex(where: { accessGrid.point(at: $0).y < lineEnd.y }) ?? 0
-                pathTail = pathTail.prefix(upTo: lastAbove + 1)
-            } else {
-                // second to last below last, line goes up, will cross bottom of box
-                lineEnd = Point(x: pR0p.x, y: target.frame.maxY)
-                let lastBelow = pathTail.lastIndex(where: { accessGrid.point(at: $0).y > lineEnd.y }) ?? 0
-                pathTail = pathTail.prefix(upTo: lastBelow + 1)
-            }
-        } else {
-            // horizontal
-            if pathR1.x < pathR0.x {
-                // second to last left of last, line goes right, will cross left side of box
-                lineEnd = Point(x: target.frame.minX, y: pR0p.y)
-                let lastLeft = pathTail.lastIndex(where: { accessGrid.point(at: $0).x < lineEnd.x }) ?? 0
-                pathTail = pathTail.prefix(upTo: lastLeft + 1)
-            } else {
-                // second to last right of last, line goes left, will cross right side of box
-                lineEnd = Point(x: target.frame.maxX, y: pR0p.y)
-                let lastRight = pathTail.lastIndex(where: { accessGrid.point(at: $0).x > lineEnd.x }) ?? 0
-                pathTail = pathTail.prefix(upTo: lastRight + 1)
-            }
+        guard let (end: lineEnd, path: pathTail) = findLineEnd(
+            path: pathTail,
+            target: target.frame,
+            accessGrid: accessGrid
+        ) else {
+            continue
         }
 
         commands.append(.move(lineStart))
@@ -133,6 +84,84 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
     }
 
     return graphics.makeDrawing(size: graph.frame.size).draw(commands)
+}
+
+func findLineStart(
+    path: ArraySlice<AccessGrid.Coordinate>,
+    source: Rectangle,
+    accessGrid: AccessGrid
+) -> (start: Point, path: ArraySlice<AccessGrid.Coordinate>)? {
+    guard let path0 = path.first,
+          case var pathTail = path.dropFirst(),
+          let path1 = pathTail.dropFirst().first
+    else { return nil }
+
+    let lineStart: Point
+    let pp0: Point = accessGrid.point(at: path0)
+
+    if path0.x == path1.x {
+        // vertical
+        if path0.y < path1.y {
+            // going down, will cross with bottom of box
+            lineStart = Point(x: pp0.x, y: source.maxY)
+            pathTail = pathTail.drop(while: { accessGrid.point(at: $0).y < lineStart.y })
+        } else {
+            // going up, will cross with top of box
+            lineStart = Point(x: pp0.x, y: source.minY)
+            pathTail = pathTail.drop(while: { accessGrid.point(at: $0).y > lineStart.y })
+        }
+    } else {
+        // horizontal
+        if path0.x < path1.x {
+            // going right, will cross with right edge of box
+            lineStart = Point(x: source.maxX, y: pp0.y)
+            pathTail = pathTail.drop(while: { accessGrid.point(at: $0).x < lineStart.x })
+        } else {
+            // going left, will cross with left edge of box
+            lineStart = Point(x: source.minX, y: pp0.y)
+            pathTail = pathTail.drop(while: { accessGrid.point(at: $0).x > lineStart.x })
+        }
+    }
+    return (start: lineStart, path: pathTail)
+}
+
+func findLineEnd(
+    path: ArraySlice<AccessGrid.Coordinate>,
+    target: Rectangle,
+    accessGrid: AccessGrid
+) -> (end: Point, path: ArraySlice<AccessGrid.Coordinate>)? {
+    var path = path
+    guard let pathR0 = path.last, let pathR1 = path.dropLast().last else { return nil }
+    let pR0p: Point = accessGrid.point(at: pathR0)
+    let lineEnd: Point
+    if pathR0.x == pathR1.x {
+        // vertical
+        if pathR1.y < pathR0.y {
+            // second to last is above last, line goes down, will cross top of box
+            lineEnd = Point(x: pR0p.x, y: target.minY)
+            let lastAbove = path.lastIndex(where: { accessGrid.point(at: $0).y < lineEnd.y }) ?? 0
+            path = path.prefix(upTo: lastAbove + 1)
+        } else {
+            // second to last below last, line goes up, will cross bottom of box
+            lineEnd = Point(x: pR0p.x, y: target.maxY)
+            let lastBelow = path.lastIndex(where: { accessGrid.point(at: $0).y > lineEnd.y }) ?? 0
+            path = path.prefix(upTo: lastBelow + 1)
+        }
+    } else {
+        // horizontal
+        if pathR1.x < pathR0.x {
+            // second to last left of last, line goes right, will cross left side of box
+            lineEnd = Point(x: target.minX, y: pR0p.y)
+            let lastLeft = path.lastIndex(where: { accessGrid.point(at: $0).x < lineEnd.x }) ?? 0
+            path = path.prefix(upTo: lastLeft + 1)
+        } else {
+            // second to last right of last, line goes left, will cross right side of box
+            lineEnd = Point(x: target.maxX, y: pR0p.y)
+            let lastRight = path.lastIndex(where: { accessGrid.point(at: $0).x > lineEnd.x }) ?? 0
+            path = path.prefix(upTo: lastRight + 1)
+        }
+    }
+    return (end: lineEnd, path: path)
 }
 
 func filledVeeCommands(
