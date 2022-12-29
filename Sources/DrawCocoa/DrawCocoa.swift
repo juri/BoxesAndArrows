@@ -90,9 +90,16 @@ extension DrawCocoa: Drawing {
         case let .fill(rects):
             context.fill(rects.map(CGRect.init(_:)))
 
-        case .fillPath:
+        case let .drawPath(method):
             context.setFillColor(.black)
-            context.fillPath()
+            let mode: CGPathDrawingMode = {
+                switch method {
+                case .fill: return .fill
+                case .stroke: return .stroke
+                case .fillStroke: return .fillStroke
+                }
+            }()
+            context.drawPath(using: mode)
 
         case let .move(point):
             context.move(to: CGPoint(point))

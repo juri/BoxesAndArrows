@@ -109,10 +109,16 @@ public enum DrawCommand {
     case addRect(Rectangle)
     case draw(text: AttributedString, point: Point)
     case fill([Rectangle])
-    case fillPath
+    case drawPath(DrawMethod)
     case move(Point)
     case setFill(Color)
     case strokePath
+}
+
+public enum DrawMethod {
+    case stroke
+    case fill
+    case fillStroke
 }
 
 public protocol Graphics<Image> {
