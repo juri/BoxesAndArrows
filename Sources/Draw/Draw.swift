@@ -91,17 +91,46 @@ public struct Color: Hashable {
     public var green: Double
     public var blue: Double
     public var alpha: Double
+
+    public init(
+        red: Double,
+        green: Double,
+        blue: Double,
+        alpha: Double
+    ) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+        self.alpha = alpha
+    }
 }
 
 extension Color {
-    public static let black = Color(red: 0, green: 0, blue: 0, alpha: 1)
-    public static let white = Color(red: 1, green: 1, blue: 1, alpha: 1)
-    public static let blue = Color(red: 0, green: 0, blue: 1, alpha: 1)
-    public static let green = Color(red: 0, green: 1, blue: 0, alpha: 1)
-    public static let red = Color(red: 1, green: 0, blue: 0, alpha: 1)
-    public static let yellow = Color(red: 1, green: 1, blue: 0, alpha: 1)
-    public static let cyan = Color(red: 0, green: 1, blue: 1, alpha: 1)
-    public static let magenta = Color(red: 1, green: 0, blue: 1, alpha: 1)
+    public static let black = Color(red: 0 as Double, green: 0, blue: 0, alpha: 1)
+    public static let white = Color(red: 1 as Double, green: 1, blue: 1, alpha: 1)
+    public static let blue = Color(red: 0 as Double, green: 0, blue: 1, alpha: 1)
+    public static let green = Color(red: 0 as Double, green: 1, blue: 0, alpha: 1)
+    public static let red = Color(red: 1 as Double, green: 0, blue: 0, alpha: 1)
+    public static let yellow = Color(red: 1 as Double, green: 1, blue: 0, alpha: 1)
+    public static let cyan = Color(red: 0 as Double, green: 1, blue: 1, alpha: 1)
+    public static let magenta = Color(red: 1 as Double, green: 0, blue: 1, alpha: 1)
+
+    public init(red: Int, green: Int, blue: Int, alpha: Int) {
+        self.init(
+            red: Double(red) / 255.0,
+            green: Double(green) / 255.0,
+            blue: Double(blue) / 255.0,
+            alpha: Double(alpha) / 255.0
+        )
+    }
+
+    public init(hex: Int) {
+        let red = hex >> 24 & 0xFF
+        let green = hex >> 16 & 0xFF
+        let blue = hex >> 8 & 0xFF
+        let alpha = hex & 0xFF
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
 }
 
 public enum DrawCommand {
