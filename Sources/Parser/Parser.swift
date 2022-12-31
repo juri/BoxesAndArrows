@@ -53,7 +53,7 @@ struct ColorField: Equatable {
     let value: Color
 }
 
-let _colorParse = Parse {
+let colorParse = Parse {
     ColorFieldID.parser()
     Whitespace(.horizontal)
     ":".utf8
@@ -172,7 +172,7 @@ enum BlockField: Equatable {
 }
 
 let blockFieldParser = OneOf {
-    _colorParse.map(BlockField.ColorConversion())
+    colorParse.map(BlockField.ColorConversion())
     numberParse.map(BlockField.NumericFieldConversion())
     From(.substring) { stringParse.map(BlockField.StringFieldConversion()) }
 }
