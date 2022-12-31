@@ -66,7 +66,7 @@
 --comments indent
 --decimalgrouping 3,6
 --elseposition same-line
---hexgrouping 4,8
+--hexgrouping 2,8
 --ifdef no-indent
 --indent 4
 --octalgrouping 4,8
