@@ -48,9 +48,20 @@ enum NumericFieldID: String, CaseIterable {
     case lineWidth = "line-width"
 }
 
+enum VariableFieldID: String, CaseIterable {
+    case head1
+    case head2
+    case style
+}
+
 struct ColorField: Equatable {
     let fieldID: ColorFieldID
     let value: Color
+}
+
+struct VariableField: Equatable {
+    let fieldID: VariableFieldID
+    let value: String
 }
 
 let colorParse = Parse {
@@ -67,6 +78,29 @@ let numberParse = Parse(.memberwise(NumericField.init(fieldID:value:))) {
     ":".utf8
     Whitespace(.horizontal)
     Double.parser()
+}
+
+extension VariableField {
+    struct Conv: Conversion {
+        typealias Input = (VariableFieldID, Substring)
+        typealias Output = VariableField
+
+        func apply(_ input: (VariableFieldID, Substring)) throws -> VariableField {
+            VariableField(fieldID: input.0, value: String(input.1))
+        }
+
+        func unapply(_ output: VariableField) throws -> (VariableFieldID, Substring) {
+            (output.fieldID, output.value[...])
+        }
+    }
+}
+
+let variableParse = ParsePrint(VariableField.Conv()) {
+    VariableFieldID.parser()
+    Whitespace(.horizontal)
+    ":"
+    Whitespace(.horizontal)
+    Prefix(while: { !$0.isWhitespace && $0 != ";" })
 }
 
 let escaped = Parse {
@@ -124,6 +158,7 @@ enum BlockField: Equatable {
     case color(ColorField)
     case numeric(NumericField)
     case string(StringField)
+    case variable(VariableField)
 
     struct ColorConversion: Conversion {
         func apply(_ input: (ColorFieldID, Color)) throws -> BlockField {
@@ -175,6 +210,7 @@ let blockFieldParser = OneOf {
     colorParse.map(BlockField.ColorConversion())
     numberParse.map(BlockField.NumericFieldConversion())
     From(.substring) { stringParse.map(BlockField.StringFieldConversion()) }
+    From(.substring) { variableParse.map(.case(BlockField.variable)) }
 }
 
 let terminatedBlockFieldParser = Parse {
@@ -207,7 +243,17 @@ let blockParser = Parse {
 
 let nodeStyleParser = Parse {
     "node-style".utf8
-    From(.substring) { Prefix(while: { $0 != " " }) }
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Whitespace(.horizontal)
+    blockParser
+}
+
+let nodeParser = Parse {
+    "node".utf8
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Whitespace(.horizontal)
     blockParser
 }
 

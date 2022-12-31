@@ -39,20 +39,20 @@ final class KeyValueTests: XCTestCase {
         let inputs: [Subcase<String>] = [
             Subcase(
                 """
-                { background-color: #aabbccdd; text-color: #11223344; line-width: 3.1; label: "zap"; }
+                { background-color: #aabbccdd; text-color: #11223344; line-width: 3.1; label: "zap"; head1: filledVee; }
                 """,
                 description: "One line, terminated last item"
             ),
             Subcase(
                 """
-                { background-color: #aabbccdd; text-color: #11223344; line-width: 3.1; label: "zap" }
+                { background-color: #aabbccdd; text-color: #11223344; line-width: 3.1; label: "zap"; head1: filledVee }
                 """,
                 description: "One line, unterminated last item"
             ),
             Subcase(
                 """
                 {
-                    background-color: #aabbccdd; text-color: #11223344; line-width: 3.1; label: "zap";
+                    background-color: #aabbccdd; text-color: #11223344; line-width: 3.1; label: "zap"; head1: filledVee;
                 }
                 """,
                 description: "One separate line, terminated last item"
@@ -60,7 +60,7 @@ final class KeyValueTests: XCTestCase {
             Subcase(
                 """
                 {
-                    background-color: #aabbccdd; text-color: #11223344; line-width: 3.1; label: "zap"
+                    background-color: #aabbccdd; text-color: #11223344; line-width: 3.1; label: "zap"; head1: filledVee
                 }
                 """,
                 description: "One separate line, unterminated last item"
@@ -72,6 +72,7 @@ final class KeyValueTests: XCTestCase {
                     text-color: #11223344;
                     line-width: 3.1;
                     label: "zap";
+                    head1: filledVee;
                 }
                 """,
                 description: "Separate terminated lines"
@@ -83,6 +84,7 @@ final class KeyValueTests: XCTestCase {
                     text-color: #11223344
                     line-width: 3.1
                     label: "zap"
+                    head1: filledVee
                 }
                 """,
                 description: "Separate unterminated lines"
@@ -92,7 +94,7 @@ final class KeyValueTests: XCTestCase {
                 {
                     background-color: #aabbccdd
                     text-color: #11223344; line-width: 3.1;
-                    label: "zap";
+                    label: "zap"; head1: filledVee
                 }
                 """,
                 description: "Mixed lines"
@@ -107,6 +109,7 @@ final class KeyValueTests: XCTestCase {
                     .color(ColorField(fieldID: .textColor, value: Color(hex: 0x11_22_33_44))),
                     .numeric(NumericField(fieldID: .lineWidth, value: 3.1)),
                     .string(StringField(fieldID: .label, value: "zap")),
+                    .variable(VariableField(fieldID: .head1, value: "filledVee")),
                 ],
                 "Failing case: \(input.description ?? "(no description)")",
                 file: input.file,
