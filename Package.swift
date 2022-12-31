@@ -15,6 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/compnerd/cassowary.git", from: "0.0.1"),
+        .package(url: "https://github.com/pointfreeco/swift-parsing.git", from: "0.11.0"),
         .package(url: "https://github.com/pointfreeco/swift-tagged.git", from: "0.8.0"),
     ],
     targets: [
@@ -23,8 +24,8 @@ let package = Package(
         .target(
             name: "BoxesAndArrows",
             dependencies: [
-                .product(name: "cassowary", package: "cassowary"),
-                .product(name: "Tagged", package: "swift-tagged"),
+                .cassowary,
+                .tagged,
                 "Draw",
                 "DrawCocoa",
             ]
@@ -39,9 +40,30 @@ let package = Package(
                 "Draw",
             ]
         ),
+        .target(
+            name: "Parser",
+            dependencies: [
+                .parsing,
+                "Draw",
+            ]
+        ),
         .testTarget(
             name: "BoxesAndArrowsTests",
             dependencies: ["BoxesAndArrows"]
         ),
+        .testTarget(
+            name: "ParserTests",
+            dependencies: [
+                .parsing,
+                "Draw",
+                "Parser",
+            ]
+        ),
     ]
 )
+
+extension PackageDescription.Target.Dependency {
+    static let cassowary: PackageDescription.Target.Dependency = .product(name: "cassowary", package: "cassowary")
+    static let parsing: PackageDescription.Target.Dependency = .product(name: "Parsing", package: "swift-parsing")
+    static let tagged: PackageDescription.Target.Dependency = .product(name: "Tagged", package: "swift-tagged")
+}
