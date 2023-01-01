@@ -1,0 +1,41 @@
+import Draw
+@testable import Parser
+import XCTest
+
+final class TopLevelTests: XCTestCase {
+    func test() throws {
+        let input = """
+        node-style style1 { background-color: #11223344 }
+
+        node n1 { style: style1 }
+        node n2 { style: style1 }
+
+        connect n1 n2 { head1: filledVee }
+        """
+        let output = try topLevelParser.parse(input)
+        assertEqual(
+            output,
+            [
+                .nodeStyle(
+                    TopLevelDecl.NodeStyle(
+                        name: "style1",
+                        fields: [.color(ColorField(fieldID: .backgroundColor, value: Color(hex: 0x11_22_33_44)))]
+                    )
+                ),
+                .node(
+                    TopLevelDecl.Node(name: "n1", fields: [.variable(VariableField(fieldID: .style, value: "style1"))])
+                ),
+                .node(
+                    TopLevelDecl.Node(name: "n2", fields: [.variable(VariableField(fieldID: .style, value: "style1"))])
+                ),
+                .connection(
+                    TopLevelDecl.Connection(
+                        node1: "n1",
+                        node2: "n2",
+                        fields: [.variable(VariableField(fieldID: .head1, value: "filledVee"))]
+                    )
+                ),
+            ]
+        )
+    }
+}

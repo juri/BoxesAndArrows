@@ -241,20 +241,96 @@ let blockParser = Parse {
     "}".utf8
 }
 
-let nodeStyleParser = Parse {
+let nodeStyleParser = ParsePrint(TopLevelDecl.NodeStyle.Conv()) {
     "node-style".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Whitespace(.horizontal)
     blockParser
+    Whitespace()
 }
 
-let nodeParser = Parse {
+let nodeParser = ParsePrint(TopLevelDecl.Node.Conv()) {
     "node".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Whitespace(.horizontal)
     blockParser
+    Whitespace()
+}
+
+let connectParser = ParsePrint(TopLevelDecl.Connection.Conv()) {
+    "connect".utf8
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Whitespace(.horizontal)
+    blockParser
+    Whitespace()
+}
+
+let topLevelParser = Many {
+    OneOf {
+        nodeStyleParser.map(.case(TopLevelDecl.nodeStyle))
+        nodeParser.map(.case(TopLevelDecl.node))
+        connectParser.map(.case(TopLevelDecl.connection))
+    }
+}
+
+enum TopLevelDecl: Equatable {
+    case nodeStyle(NodeStyle)
+    case node(Node)
+    case connection(Connection)
+
+    struct NodeStyle: Equatable {
+        let name: String
+        let fields: [BlockField]
+    }
+
+    struct Node: Equatable {
+        let name: String
+        let fields: [BlockField]
+    }
+
+    struct Connection: Equatable {
+        let node1: String
+        let node2: String
+        let fields: [BlockField]
+    }
+}
+
+extension TopLevelDecl.NodeStyle {
+    struct Conv: Conversion {
+        typealias Input = (Substring, [BlockField])
+        typealias Output = TopLevelDecl.NodeStyle
+
+        func apply(_ input: Input) throws -> Output { .init(name: String(input.0), fields: input.1) }
+        func unapply(_ output: Output) throws -> Input { (output.name[...], output.fields) }
+    }
+}
+
+extension TopLevelDecl.Node {
+    struct Conv: Conversion {
+        typealias Input = (Substring, [BlockField])
+        typealias Output = TopLevelDecl.Node
+
+        func apply(_ input: Input) throws -> Output { .init(name: String(input.0), fields: input.1) }
+        func unapply(_ output: Output) throws -> Input { (output.name[...], output.fields) }
+    }
+}
+
+extension TopLevelDecl.Connection {
+    struct Conv: Conversion {
+        typealias Input = (Substring, Substring, [BlockField])
+        typealias Output = TopLevelDecl.Connection
+
+        func apply(_ input: Input) throws -> Output {
+            .init(node1: String(input.0), node2: String(input.1), fields: input.2)
+        }
+
+        func unapply(_ output: Output) throws -> Input { (output.node1[...], output.node2[...], output.fields) }
+    }
 }
 
 let hexColor = ParsePrint(.memberwise(hcolor(red:green:blue:alpha:))) {
