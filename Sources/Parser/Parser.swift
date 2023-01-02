@@ -270,6 +270,73 @@ let connectParser = ParsePrint(TopLevelDecl.Connection.Conv()) {
     Whitespace()
 }
 
+enum EquationPart: Equatable {
+    case variable(Variable)
+    case operation(Operation)
+    case relation(Relation)
+    case constant(Double)
+
+    struct Variable: Equatable {
+        let head: String
+        let tail: [String]
+    }
+
+    enum Operation: String, Equatable, CaseIterable {
+        case add = "+"
+        case sub = "-"
+        case mult = "*"
+        case div = "/"
+    }
+
+    enum Relation: String, Equatable, CaseIterable {
+        case lt = "<"
+        case lte = "<="
+        case eq = "=="
+        case gte = ">="
+        case gt = ">"
+    }
+}
+
+extension EquationPart.Variable {
+    struct Conv: Conversion {
+        typealias Input = [Substring]
+        typealias Output = EquationPart.Variable
+
+        func apply(_ input: Input) throws -> EquationPart.Variable {
+            .init(head: String(input[0]), tail: input.dropFirst().map(String.init))
+        }
+
+        func unapply(_ output: Output) throws -> Input {
+            [output.head[...]] + output.tail.map { $0[...] }
+        }
+    }
+
+    static let parser = Many {
+        Prefix { !$0.isWhitespace && $0 != "." }
+            .filter { !$0.isEmpty }
+    } separator: {
+        "."
+    }
+    .filter { !$0.isEmpty }
+    .map(Conv())
+}
+
+extension EquationPart {
+    static let parser = Parse {
+        OneOf {
+            Double.parser(of: Substring.self).map(.case(EquationPart.constant))
+            Operation.parser().map(EquationPart.operation)
+            Relation.parser().map(EquationPart.relation)
+            EquationPart.Variable.parser.map(EquationPart.variable)
+        }
+        Whitespace(.horizontal)
+    }
+
+    static let manyParser = Many {
+        parser
+    }
+}
+
 let topLevelParser = Many {
     OneOf {
         nodeStyleParser.map(.case(TopLevelDecl.nodeStyle))
