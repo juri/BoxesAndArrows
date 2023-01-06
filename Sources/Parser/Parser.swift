@@ -182,51 +182,6 @@ let blockParser = Parse {
     "}".utf8
 }
 
-let nodeStyleParser = ParsePrint(TopLevelDecl.NodeStyle.Conv()) {
-    "node-style".utf8
-    Whitespace(.horizontal)
-    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
-    Whitespace(.horizontal)
-    blockParser
-    Whitespace()
-}
-
-let nodeParser = ParsePrint(TopLevelDecl.Node.Conv()) {
-    "node".utf8
-    Whitespace(.horizontal)
-    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
-    Whitespace(.horizontal)
-    blockParser
-    Whitespace()
-}
-
-let connectParser = ParsePrint(TopLevelDecl.Connection.Conv()) {
-    "connect".utf8
-    Whitespace(.horizontal)
-    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
-    Whitespace(.horizontal)
-    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
-    Whitespace(.horizontal)
-    blockParser
-    Whitespace()
-}
-
-let constraintParser = ParsePrint {
-    "constrain"
-    Whitespace(.horizontal)
-    EquationPart.manyParser
-    Whitespace()
-}
-
-let topLevelParser = Many {
-    OneOf {
-        nodeStyleParser.map(.case(TopLevelDecl.nodeStyle))
-        nodeParser.map(.case(TopLevelDecl.node))
-        connectParser.map(.case(TopLevelDecl.connection))
-        From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
-    }
-}
-
 enum TopLevelDecl: Equatable {
     case nodeStyle(NodeStyle)
     case node(Node)
@@ -280,5 +235,50 @@ extension TopLevelDecl.Connection {
         }
 
         func unapply(_ output: Output) throws -> Input { (output.node1[...], output.node2[...], output.fields) }
+    }
+}
+
+let nodeStyleParser = ParsePrint(TopLevelDecl.NodeStyle.Conv()) {
+    "node-style".utf8
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Whitespace(.horizontal)
+    blockParser
+    Whitespace()
+}
+
+let nodeParser = ParsePrint(TopLevelDecl.Node.Conv()) {
+    "node".utf8
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Whitespace(.horizontal)
+    blockParser
+    Whitespace()
+}
+
+let connectParser = ParsePrint(TopLevelDecl.Connection.Conv()) {
+    "connect".utf8
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Whitespace(.horizontal)
+    blockParser
+    Whitespace()
+}
+
+let constraintParser = ParsePrint {
+    "constrain"
+    Whitespace(.horizontal)
+    EquationPart.manyParser
+    Whitespace()
+}
+
+let topLevelParser = Many {
+    OneOf {
+        nodeStyleParser.map(.case(TopLevelDecl.nodeStyle))
+        nodeParser.map(.case(TopLevelDecl.node))
+        connectParser.map(.case(TopLevelDecl.connection))
+        From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
     }
 }
