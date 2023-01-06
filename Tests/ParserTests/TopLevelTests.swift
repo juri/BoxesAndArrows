@@ -20,20 +20,26 @@ final class TopLevelTests: XCTestCase {
                 .nodeStyle(
                     TopLevelDecl.NodeStyle(
                         name: "style1",
-                        fields: [.color(ColorField(fieldID: .backgroundColor, value: Color(hex: 0x11_22_33_44)))]
+                        fields: [
+                            .color(BlockField.ColorField(fieldID: .backgroundColor, value: Color(hex: 0x11_22_33_44))),
+                        ]
                     )
                 ),
                 .node(
-                    TopLevelDecl.Node(name: "n1", fields: [.variable(VariableField(fieldID: .style, value: "style1"))])
+                    TopLevelDecl.Node(
+                        name: "n1", fields: [.variable(BlockField.VariableField(fieldID: .style, value: "style1"))]
+                    )
                 ),
                 .node(
-                    TopLevelDecl.Node(name: "n2", fields: [.variable(VariableField(fieldID: .style, value: "style1"))])
+                    TopLevelDecl.Node(
+                        name: "n2", fields: [.variable(BlockField.VariableField(fieldID: .style, value: "style1"))]
+                    )
                 ),
                 .connection(
                     TopLevelDecl.Connection(
                         node1: "n1",
                         node2: "n2",
-                        fields: [.variable(VariableField(fieldID: .head1, value: "filledVee"))]
+                        fields: [.variable(BlockField.VariableField(fieldID: .head1, value: "filledVee"))]
                     )
                 ),
                 .constraint([

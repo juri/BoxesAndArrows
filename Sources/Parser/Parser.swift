@@ -32,67 +32,8 @@ enum VariableFieldID: String, CaseIterable {
     case style
 }
 
-struct ColorField: Equatable {
-    let fieldID: ColorFieldID
-    let value: Color
-}
-
-struct VariableField: Equatable {
-    let fieldID: VariableFieldID
-    let value: String
-}
-
-let numberParse = Parse(.memberwise(NumericField.init(fieldID:value:))) {
-    NumericFieldID.parser()
-    Whitespace(.horizontal)
-    ":".utf8
-    Whitespace(.horizontal)
-    Double.parser()
-}
-
-extension VariableField {
-    struct Conv: Conversion {
-        typealias Input = (VariableFieldID, Substring)
-        typealias Output = VariableField
-
-        func apply(_ input: (VariableFieldID, Substring)) throws -> VariableField {
-            VariableField(fieldID: input.0, value: String(input.1))
-        }
-
-        func unapply(_ output: VariableField) throws -> (VariableFieldID, Substring) {
-            (output.fieldID, output.value[...])
-        }
-    }
-}
-
-let variableParse = ParsePrint(VariableField.Conv()) {
-    VariableFieldID.parser()
-    Whitespace(.horizontal)
-    ":"
-    Whitespace(.horizontal)
-    Prefix(while: { !$0.isWhitespace && $0 != ";" })
-}
-
-let stringParse = Parse(.memberwise(StringField.init(fieldID:value:))) {
-    StringFieldID.parser()
-    Whitespace(.horizontal)
-    ":"
-    Whitespace(.horizontal)
-    Strings.quoted
-}
-
-struct NumericField: Equatable {
-    let fieldID: NumericFieldID
-    let value: Double
-}
-
 enum StringFieldID: String, CaseIterable {
     case label
-}
-
-struct StringField: Equatable {
-    let fieldID: StringFieldID
-    let value: String
 }
 
 enum BlockField: Equatable {
@@ -145,6 +86,60 @@ enum BlockField: Equatable {
             }
         }
     }
+
+    struct ColorField: Equatable {
+        let fieldID: ColorFieldID
+        let value: Color
+    }
+
+    struct StringField: Equatable {
+        let fieldID: StringFieldID
+        let value: String
+    }
+
+    struct VariableField: Equatable {
+        let fieldID: VariableFieldID
+        let value: String
+    }
+
+    struct NumericField: Equatable {
+        let fieldID: NumericFieldID
+        let value: Double
+    }
+}
+
+extension BlockField.VariableField {
+    struct Conv: Conversion {
+        typealias Input = (VariableFieldID, Substring)
+        typealias Output = BlockField.VariableField
+
+        func apply(_ input: Input) throws -> Output { Output(fieldID: input.0, value: String(input.1)) }
+        func unapply(_ output: Output) throws -> Input { (output.fieldID, output.value[...]) }
+    }
+}
+
+let numberParse = Parse(.memberwise(BlockField.NumericField.init(fieldID:value:))) {
+    NumericFieldID.parser()
+    Whitespace(.horizontal)
+    ":".utf8
+    Whitespace(.horizontal)
+    Double.parser()
+}
+
+let stringParse = Parse(.memberwise(BlockField.StringField.init(fieldID:value:))) {
+    StringFieldID.parser()
+    Whitespace(.horizontal)
+    ":"
+    Whitespace(.horizontal)
+    Strings.quoted
+}
+
+let variableParse = ParsePrint(BlockField.VariableField.Conv()) {
+    VariableFieldID.parser()
+    Whitespace(.horizontal)
+    ":"
+    Whitespace(.horizontal)
+    Prefix(while: { !$0.isWhitespace && $0 != ";" })
 }
 
 let blockFieldParser = OneOf {

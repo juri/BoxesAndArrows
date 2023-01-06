@@ -16,7 +16,7 @@ final class KeyValueTests: XCTestCase {
         let output = try blockFieldParser.parse(input)
         XCTAssertEqual(
             output,
-            BlockField.color(ColorField(fieldID: .backgroundColor, value: Color(hex: 0xAA_BB_CC_DD)))
+            BlockField.color(BlockField.ColorField(fieldID: .backgroundColor, value: Color(hex: 0xAA_BB_CC_DD)))
         )
     }
 
@@ -30,7 +30,7 @@ final class KeyValueTests: XCTestCase {
         XCTAssertEqual(
             output,
             [
-                BlockField.color(ColorField(fieldID: .backgroundColor, value: Color(hex: 0xAA_BB_CC_DD))),
+                BlockField.color(BlockField.ColorField(fieldID: .backgroundColor, value: Color(hex: 0xAA_BB_CC_DD))),
             ]
         )
     }
@@ -105,11 +105,11 @@ final class KeyValueTests: XCTestCase {
             XCTAssertEqual(
                 output,
                 [
-                    .color(ColorField(fieldID: .backgroundColor, value: Color(hex: 0xAA_BB_CC_DD))),
-                    .color(ColorField(fieldID: .textColor, value: Color(hex: 0x11_22_33_44))),
-                    .numeric(NumericField(fieldID: .lineWidth, value: 3.1)),
-                    .string(StringField(fieldID: .label, value: "zap")),
-                    .variable(VariableField(fieldID: .head1, value: "filledVee")),
+                    .color(BlockField.ColorField(fieldID: .backgroundColor, value: Color(hex: 0xAA_BB_CC_DD))),
+                    .color(BlockField.ColorField(fieldID: .textColor, value: Color(hex: 0x11_22_33_44))),
+                    .numeric(BlockField.NumericField(fieldID: .lineWidth, value: 3.1)),
+                    .string(BlockField.StringField(fieldID: .label, value: "zap")),
+                    .variable(BlockField.VariableField(fieldID: .head1, value: "filledVee")),
                 ],
                 "Failing case: \(input.description ?? "(no description)")",
                 file: input.file,
