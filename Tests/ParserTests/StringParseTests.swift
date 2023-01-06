@@ -3,26 +3,26 @@ import XCTest
 
 final class StringParseTests: XCTestCase {
     func testFailOnEmpty() throws {
-        XCTAssertThrowsError(try quoted.parse(""))
+        XCTAssertThrowsError(try Strings.quoted.parse(""))
     }
 
     func testFailOnSingleQuote() throws {
-        XCTAssertThrowsError(try quoted.parse("\""))
+        XCTAssertThrowsError(try Strings.quoted.parse("\""))
     }
 
     func testFailOnUnterminatedQuote() throws {
-        XCTAssertThrowsError(try quoted.parse("\"hello"))
+        XCTAssertThrowsError(try Strings.quoted.parse("\"hello"))
     }
 
     func testSucceedOnEmptyString() throws {
-        let output = try quoted.parse("""
+        let output = try Strings.quoted.parse("""
         ""
         """)
         XCTAssertEqual(output, "")
     }
 
     func testSucceedOnNonEmptyString() throws {
-        let output = try quoted.parse("""
+        let output = try Strings.quoted.parse("""
         "asdf"
         """)
         XCTAssertEqual(output, "asdf")
@@ -33,7 +33,7 @@ final class StringParseTests: XCTestCase {
         "\\""
         """
         print("input", input)
-        let output = try quoted.parse(input)
+        let output = try Strings.quoted.parse(input)
         XCTAssertEqual(output, "\"")
     }
 
@@ -42,7 +42,7 @@ final class StringParseTests: XCTestCase {
         "\\"asdf"
         """
         print("input", input)
-        let output = try quoted.parse(input)
+        let output = try Strings.quoted.parse(input)
         XCTAssertEqual(output, "\"asdf")
     }
 
@@ -51,7 +51,7 @@ final class StringParseTests: XCTestCase {
         "asdf\\""
         """
         print("input", input)
-        let output = try quoted.parse(input)
+        let output = try Strings.quoted.parse(input)
         XCTAssertEqual(output, "asdf\"")
     }
 
@@ -60,7 +60,7 @@ final class StringParseTests: XCTestCase {
         "qwer\\"asdf"
         """
         print("input", input)
-        let output = try quoted.parse(input)
+        let output = try Strings.quoted.parse(input)
         XCTAssertEqual(output, "qwer\"asdf")
     }
 }

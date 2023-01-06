@@ -73,41 +73,12 @@ let variableParse = ParsePrint(VariableField.Conv()) {
     Prefix(while: { !$0.isWhitespace && $0 != ";" })
 }
 
-let escaped = Parse {
-    "\\"
-    Prefix(1)
-}
-
-let notQuote = Prefix(while: { $0 != "\"" && $0 != "\\" }).filter { !$0.isEmpty }
-let stringPart = OneOf {
-    escaped
-    notQuote
-}
-
-struct StringJoinConversion: Conversion {
-    func apply(_ input: [Substring]) throws -> String { input.joined() }
-    func unapply(_ output: String) throws -> [Substring] { [output[...]] }
-}
-
-let oneOrMoreStringContent = Many {
-    stringPart
-}.map(StringJoinConversion())
-
-let stringContent = oneOrMoreStringContent
-    .replaceError(with: "")
-
-let quoted = Parse {
-    "\""
-    stringContent
-    "\""
-}
-
 let stringParse = Parse(.memberwise(StringField.init(fieldID:value:))) {
     StringFieldID.parser()
     Whitespace(.horizontal)
     ":"
     Whitespace(.horizontal)
-    quoted
+    Strings.quoted
 }
 
 struct NumericField: Equatable {
