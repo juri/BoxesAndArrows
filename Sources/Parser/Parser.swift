@@ -325,9 +325,9 @@ extension EquationPart {
     static let parser = Parse {
         OneOf {
             Double.parser(of: Substring.self).map(.case(EquationPart.constant))
-            Operation.parser().map(EquationPart.operation)
-            Relation.parser().map(EquationPart.relation)
-            EquationPart.Variable.parser.map(EquationPart.variable)
+            Operation.parser().map(EquationPart.Operation.Conv())
+            Relation.parser().map(EquationPart.Relation.Conv())
+            EquationPart.Variable.parser.map(EquationPart.Variable.CaseConv())
         }
         Whitespace(.horizontal)
     }
@@ -337,11 +337,73 @@ extension EquationPart {
     }
 }
 
+extension EquationPart.Operation {
+    struct Conv: Conversion {
+        typealias Input = EquationPart.Operation
+        typealias Output = EquationPart
+
+        func apply(_ input: Input) throws -> Output {
+            .operation(input)
+        }
+
+        func unapply(_ output: EquationPart) throws -> Input {
+            switch output {
+            case let .operation(op): return op
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+extension EquationPart.Relation {
+    struct Conv: Conversion {
+        typealias Input = EquationPart.Relation
+        typealias Output = EquationPart
+
+        func apply(_ input: Input) throws -> Output {
+            .relation(input)
+        }
+
+        func unapply(_ output: EquationPart) throws -> Input {
+            switch output {
+            case let .relation(r): return r
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+extension EquationPart.Variable {
+    struct CaseConv: Conversion {
+        typealias Input = EquationPart.Variable
+        typealias Output = EquationPart
+
+        func apply(_ input: Input) throws -> Output {
+            .variable(input)
+        }
+
+        func unapply(_ output: EquationPart) throws -> EquationPart.Variable {
+            switch output {
+            case let .variable(v): return v
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+let constraintParser = ParsePrint {
+    "constrain"
+    Whitespace(.horizontal)
+    EquationPart.manyParser
+    Whitespace()
+}
+
 let topLevelParser = Many {
     OneOf {
         nodeStyleParser.map(.case(TopLevelDecl.nodeStyle))
         nodeParser.map(.case(TopLevelDecl.node))
         connectParser.map(.case(TopLevelDecl.connection))
+        From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
     }
 }
 
@@ -349,6 +411,7 @@ enum TopLevelDecl: Equatable {
     case nodeStyle(NodeStyle)
     case node(Node)
     case connection(Connection)
+    case constraint([EquationPart])
 
     struct NodeStyle: Equatable {
         let name: String

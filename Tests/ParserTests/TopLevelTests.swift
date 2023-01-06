@@ -11,6 +11,7 @@ final class TopLevelTests: XCTestCase {
         node n2 { style: style1 }
 
         connect n1 n2 { head1: filledVee }
+        constrain n1.left == n2.right + 30.0
         """
         let output = try topLevelParser.parse(input)
         assertEqual(
@@ -35,6 +36,13 @@ final class TopLevelTests: XCTestCase {
                         fields: [.variable(VariableField(fieldID: .head1, value: "filledVee"))]
                     )
                 ),
+                .constraint([
+                    .variable(.init(head: "n1", tail: ["left"])),
+                    .relation(.eq),
+                    .variable(.init(head: "n2", tail: ["right"])),
+                    .operation(.add),
+                    .constant(30.0),
+                ]),
             ]
         )
     }
