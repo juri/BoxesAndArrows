@@ -311,6 +311,22 @@ extension EquationPart.Variable {
         }
     }
 
+    struct CaseConv: Conversion {
+        typealias Input = EquationPart.Variable
+        typealias Output = EquationPart
+
+        func apply(_ input: Input) throws -> Output {
+            .variable(input)
+        }
+
+        func unapply(_ output: EquationPart) throws -> EquationPart.Variable {
+            switch output {
+            case let .variable(v): return v
+            default: throw ParsingError()
+            }
+        }
+    }
+
     static let parser = Many {
         Prefix { !$0.isWhitespace && $0 != "." }
             .filter { !$0.isEmpty }
@@ -367,24 +383,6 @@ extension EquationPart.Relation {
         func unapply(_ output: EquationPart) throws -> Input {
             switch output {
             case let .relation(r): return r
-            default: throw ParsingError()
-            }
-        }
-    }
-}
-
-extension EquationPart.Variable {
-    struct CaseConv: Conversion {
-        typealias Input = EquationPart.Variable
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .variable(input)
-        }
-
-        func unapply(_ output: EquationPart) throws -> EquationPart.Variable {
-            switch output {
-            case let .variable(v): return v
             default: throw ParsingError()
             }
         }
