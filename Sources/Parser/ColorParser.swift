@@ -28,10 +28,10 @@ let colorParse = Parse {
     Whitespace(.horizontal)
     ":".utf8
     Whitespace(.horizontal)
-    hexColor
+    rrggbbaaHexColor
 }
 
-let hexColor = ParsePrint(.memberwise(hcolor(red:green:blue:alpha:))) {
+let rrggbbaaHexColor = ParsePrint(.memberwise(hcolor(red:green:blue:alpha:))) {
     "#".utf8
     HexByte()
     HexByte()
