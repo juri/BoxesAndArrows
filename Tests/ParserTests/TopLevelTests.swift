@@ -42,13 +42,27 @@ final class TopLevelTests: XCTestCase {
                         fields: [.variable(BlockField.VariableField(fieldID: .head1, value: "filledVee"))]
                     )
                 ),
-                .constraint([
-                    .variable(.init(head: "n1", tail: ["left"])),
-                    .relation(.eq),
-                    .variable(.init(head: "n2", tail: ["right"])),
-                    .operation(.add),
-                    .constant(30.0),
-                ]),
+                .constraint(
+                    .term(
+                        .variable(
+                            Parser.EquationPart.Variable(head: "n1", tail: ["left"]),
+                            .relation(
+                                Parser.ValidEquationMember.Relation(
+                                    part: .eq,
+                                    next: .variable(
+                                        Parser.EquationPart.Variable(head: "n2", tail: ["right"]),
+                                        .operation(
+                                            Parser.ValidEquationMember.Operation(
+                                                part: .add,
+                                                next: .constant(30.0, nil)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
             ]
         )
     }
