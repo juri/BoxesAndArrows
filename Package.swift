@@ -28,6 +28,7 @@ let package = Package(
                 .tagged,
                 "Draw",
                 "DrawCocoa",
+                "Parser",
             ]
         ),
         .target(
