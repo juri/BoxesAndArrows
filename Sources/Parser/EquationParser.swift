@@ -1,24 +1,24 @@
 import Parsing
 
-enum EquationPart: Equatable {
+public enum EquationPart: Equatable {
     case variable(Variable)
     case operation(Operation)
     case relation(Relation)
     case constant(Double)
 
-    struct Variable: Equatable {
-        let head: String
-        let tail: [String]
+    public struct Variable: Equatable {
+        public let head: String
+        public let tail: [String]
     }
 
-    enum Operation: String, Equatable, CaseIterable {
+    public enum Operation: String, Equatable, CaseIterable {
         case add = "+"
         case sub = "-"
         case mult = "*"
         case div = "/"
     }
 
-    enum Relation: String, Equatable, CaseIterable {
+    public enum Relation: String, Equatable, CaseIterable {
         case lt = "<"
         case lte = "<="
         case eq = "=="
@@ -27,16 +27,16 @@ enum EquationPart: Equatable {
     }
 }
 
-enum ValidEquationMember: Equatable {
+public enum ValidEquationMember: Equatable {
     case term(Term)
     case operation(Operation)
     case relation(Relation)
 
-    indirect enum Term: Equatable {
+    public indirect enum Term: Equatable {
         case variable(EquationPart.Variable, Next?)
         case constant(Double, Next?)
 
-        enum Next: Equatable {
+        public enum Next: Equatable {
             case operation(ValidEquationMember.Operation)
             case relation(ValidEquationMember.Relation)
         }
@@ -49,14 +49,14 @@ enum ValidEquationMember: Equatable {
         }
     }
 
-    struct Operation: Equatable {
-        var part: EquationPart.Operation
-        var next: Term?
+    public struct Operation: Equatable {
+        public var part: EquationPart.Operation
+        public var next: Term?
     }
 
-    struct Relation: Equatable {
-        var part: EquationPart.Relation
-        var next: Term?
+    public struct Relation: Equatable {
+        public var part: EquationPart.Relation
+        public var next: Term?
     }
 
     struct ValidatingEquationConversion: Conversion {

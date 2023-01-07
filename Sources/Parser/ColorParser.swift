@@ -66,7 +66,7 @@ struct NamedColor: ParserPrinter {
     }
 }
 
-enum ColorFieldID: String, CaseIterable {
+public enum ColorFieldID: String, CaseIterable {
     case backgroundColor = "background-color"
     case textColor = "text-color"
 }

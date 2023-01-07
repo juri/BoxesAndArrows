@@ -22,21 +22,21 @@ import Parsing
 
 struct ParsingError: Error {}
 
-enum NumericFieldID: String, CaseIterable {
+public enum NumericFieldID: String, CaseIterable {
     case lineWidth = "line-width"
 }
 
-enum VariableFieldID: String, CaseIterable {
+public enum VariableFieldID: String, CaseIterable {
     case head1
     case head2
     case style
 }
 
-enum StringFieldID: String, CaseIterable {
+public enum StringFieldID: String, CaseIterable {
     case label
 }
 
-enum BlockField: Equatable {
+public enum BlockField: Equatable {
     case color(ColorField)
     case numeric(NumericField)
     case string(StringField)
@@ -87,24 +87,24 @@ enum BlockField: Equatable {
         }
     }
 
-    struct ColorField: Equatable {
-        let fieldID: ColorFieldID
-        let value: Color
+    public struct ColorField: Equatable {
+        public let fieldID: ColorFieldID
+        public let value: Color
     }
 
-    struct StringField: Equatable {
-        let fieldID: StringFieldID
-        let value: String
+    public struct StringField: Equatable {
+        public let fieldID: StringFieldID
+        public let value: String
     }
 
-    struct VariableField: Equatable {
-        let fieldID: VariableFieldID
-        let value: String
+    public struct VariableField: Equatable {
+        public let fieldID: VariableFieldID
+        public let value: String
     }
 
-    struct NumericField: Equatable {
-        let fieldID: NumericFieldID
-        let value: Double
+    public struct NumericField: Equatable {
+        public let fieldID: NumericFieldID
+        public let value: Double
     }
 }
 
@@ -177,26 +177,26 @@ let blockParser = Parse {
     "}".utf8
 }
 
-enum TopLevelDecl: Equatable {
+public enum TopLevelDecl: Equatable {
     case nodeStyle(NodeStyle)
     case node(Node)
     case connection(Connection)
     case constraint(ValidEquationMember)
 
-    struct NodeStyle: Equatable {
-        let name: String
-        let fields: [BlockField]
+    public struct NodeStyle: Equatable {
+        public let name: String
+        public let fields: [BlockField]
     }
 
-    struct Node: Equatable {
-        let name: String
-        let fields: [BlockField]
+    public struct Node: Equatable {
+        public let name: String
+        public let fields: [BlockField]
     }
 
-    struct Connection: Equatable {
-        let node1: String
-        let node2: String
-        let fields: [BlockField]
+    public struct Connection: Equatable {
+        public let node1: String
+        public let node2: String
+        public let fields: [BlockField]
     }
 }
 
