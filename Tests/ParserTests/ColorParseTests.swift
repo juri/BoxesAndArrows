@@ -7,6 +7,8 @@ final class ColorParseTests: XCTestCase {
         let cases: [Subcase<(String, Color)>] = [
             .init(("text-color: #aabbccdd", Color(hex: 0xAA_BB_CC_DD))),
             .init(("text-color: #aabbcc", Color(hex: 0xAA_BB_CC_FF))),
+            .init(("text-color: #abcd", Color(hex: 0xAA_BB_CC_DD))),
+            .init(("text-color: #abc", Color(hex: 0xAA_BB_CC_FF))),
         ]
 
         for subcase in cases {
