@@ -23,20 +23,65 @@ enum ColorFieldID: String, CaseIterable {
     case textColor = "text-color"
 }
 
-let colorParse = Parse {
-    ColorFieldID.parser()
-    Whitespace(.horizontal)
-    ":".utf8
-    Whitespace(.horizontal)
-    rrggbbaaHexColor
+struct ColorConversionRGBA: Conversion {
+    typealias Input = (UInt8, UInt8, UInt8, UInt8)
+    typealias Output = Color
+
+    func apply(_ input: Input) throws -> Output {
+        hcolor(red: input.0, green: input.1, blue: input.2, alpha: input.3)
+    }
+
+    func unapply(_ output: Color) throws -> (UInt8, UInt8, UInt8, UInt8) {
+        (
+            UInt8(output.red * 255.0),
+            UInt8(output.green * 255.0),
+            UInt8(output.blue * 255.0),
+            UInt8(output.alpha * 255.0)
+        )
+    }
 }
 
-let rrggbbaaHexColor = ParsePrint(.memberwise(hcolor(red:green:blue:alpha:))) {
+struct ColorConversionRGB: Conversion {
+    typealias Input = (UInt8, UInt8, UInt8)
+    typealias Output = Color
+
+    func apply(_ input: Input) throws -> Output {
+        hcolor(red: input.0, green: input.1, blue: input.2, alpha: 0xFF)
+    }
+
+    func unapply(_ output: Color) throws -> (UInt8, UInt8, UInt8) {
+        (
+            UInt8(output.red * 255.0),
+            UInt8(output.green * 255.0),
+            UInt8(output.blue * 255.0)
+        )
+    }
+}
+
+let rrggbbaaHexColor = ParsePrint(ColorConversionRGBA()) {
     "#".utf8
     HexByte()
     HexByte()
     HexByte()
     HexByte()
+}
+
+let rrggbbHexColor = ParsePrint(ColorConversionRGB()) {
+    "#".utf8
+    HexByte()
+    HexByte()
+    HexByte()
+}
+
+let colorParse = Parse {
+    ColorFieldID.parser()
+    Whitespace(.horizontal)
+    ":".utf8
+    Whitespace(.horizontal)
+    OneOf {
+        rrggbbaaHexColor
+        rrggbbHexColor
+    }
 }
 
 func hcolor(
