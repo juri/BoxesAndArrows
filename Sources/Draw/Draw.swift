@@ -106,6 +106,7 @@ public struct Color: Hashable {
 }
 
 extension Color {
+    public static let clear = Color(red: 0, green: 0, blue: 0, alpha: 0)
     public static let black = Color(red: 0 as Double, green: 0, blue: 0, alpha: 1)
     public static let white = Color(red: 1 as Double, green: 1, blue: 1, alpha: 1)
     public static let blue = Color(red: 0 as Double, green: 0, blue: 1, alpha: 1)
