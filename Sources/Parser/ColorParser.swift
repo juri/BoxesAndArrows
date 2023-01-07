@@ -35,6 +35,37 @@ struct SingleHexByte: ParserPrinter {
     }
 }
 
+let colorNames: [Substring: Color] = [
+    "clear": .clear,
+    "black": .black,
+    "white": .white,
+    "blue": .blue,
+    "green": .green,
+    "red": .red,
+    "yellow": .yellow,
+    "cyan": .cyan,
+    "magenta": .magenta,
+]
+
+struct NamedColor: ParserPrinter {
+    func parse(_ input: inout Substring) throws -> Color {
+        guard let color = colorNames[input] else {
+            throw ParsingError()
+        }
+        input.removeFirst(input.count)
+        return color
+    }
+
+    func print(_ output: Color, into input: inout Substring) throws {
+        for (key, value) in colorNames {
+            guard value == output else { continue }
+            input.prepend(contentsOf: key)
+            return
+        }
+        throw ParsingError()
+    }
+}
+
 enum ColorFieldID: String, CaseIterable {
     case backgroundColor = "background-color"
     case textColor = "text-color"
@@ -160,6 +191,7 @@ let colorParse = Parse {
         rrggbbHexColor
         rgbaHexColor
         rgbHexColor
+        From(.substring) { NamedColor() }
     }
 }
 
