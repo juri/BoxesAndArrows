@@ -119,6 +119,12 @@ public enum ValidEquationMember: Equatable {
             }
             guard let member else { throw ParsingError() }
             guard hasRelation else { throw ParsingError() }
+            switch member {
+            case .operation, .relation:
+                throw ParsingError()
+            case .term:
+                break
+            }
             return member
         }
 
