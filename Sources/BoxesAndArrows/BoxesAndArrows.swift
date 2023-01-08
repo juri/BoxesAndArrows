@@ -114,6 +114,14 @@ public enum ArrowHead {
     case filledVee
 }
 
+public struct ConnectionProperties {
+    public var sourceHead: ArrowHead = .line
+    public var targetHead: ArrowHead = .line
+    public var lineWidth: Double = 1.0
+
+    public static let `default` = ConnectionProperties()
+}
+
 extension Arrow {
     init(
         source: Box,
@@ -166,8 +174,18 @@ public struct Graph {
         self.boxStyles.add(boxStyle: boxStyle)
     }
 
-    mutating func connect(_ source: Box, to target: Box, sourceHead: ArrowHead = .line, targetHead: ArrowHead = .line) {
-        self.arrows.append(.init(source: source, sourceHead: sourceHead, target: target, targetHead: targetHead))
+    mutating func connect(
+        _ source: Box,
+        to target: Box,
+        connectionProperties: ConnectionProperties = .default
+    ) {
+        self.arrows.append(.init(
+            source: source,
+            sourceHead: connectionProperties.sourceHead,
+            target: target,
+            targetHead: connectionProperties.targetHead
+        ))
+        // TODO: line width
     }
 
     var frame: Rectangle {

@@ -12,8 +12,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: foo)
         graph.add(box: bar)
         graph.add(box: zap)
-        graph.connect(foo, to: zap, targetHead: .filledVee)
-        graph.connect(bar, to: zap, targetHead: .filledVee)
+        graph.connect(foo, to: zap, connectionProperties: .init(targetHead: .filledVee))
+        graph.connect(bar, to: zap, connectionProperties: .init(targetHead: .filledVee))
 
         let graphics = GraphicsCocoa()
 
@@ -64,7 +64,7 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: left)
         graph.add(box: center)
         graph.add(box: right)
-        graph.connect(left, to: right, targetHead: .filledVee)
+        graph.connect(left, to: right, connectionProperties: .init(targetHead: .filledVee))
 
         let graphics = GraphicsCocoa()
 
@@ -81,6 +81,14 @@ final class BoxesAndArrowsTests: XCTestCase {
         print()
     }
 
+    func testConstraints() throws {
+        let v1 = Variable("v1")
+        let v2 = Variable("v2")
+        let v3 = Variable("v3")
+        let c1: Constraint = v1 * 3 + 4 * v3 <= v2 * 2 + 5
+        dump(c1)
+    }
+
     func testTwoRightToLeft() throws {
         var graph = Graph()
         let left = Box(label: "left")
@@ -89,7 +97,7 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: left)
         graph.add(box: center)
         graph.add(box: right)
-        graph.connect(right, to: left, targetHead: .filledVee)
+        graph.connect(right, to: left, connectionProperties: .init(targetHead: .filledVee))
 
         let graphics = GraphicsCocoa()
         let solver = try graph.makeSolver(graphics: graphics)
@@ -113,7 +121,7 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: up)
         graph.add(box: center)
         graph.add(box: down)
-        graph.connect(up, to: down, targetHead: .filledVee)
+        graph.connect(up, to: down, connectionProperties: .init(targetHead: .filledVee))
 
         let graphics = GraphicsCocoa()
         let solver = try graph.makeSolver(graphics: graphics)
@@ -141,8 +149,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: box3)
         graph.add(box: box4)
         graph.add(box: box5)
-        graph.connect(box1, to: box4, targetHead: .filledVee)
-        graph.connect(box2, to: box5, targetHead: .filledVee)
+        graph.connect(box1, to: box4, connectionProperties: .init(targetHead: .filledVee))
+        graph.connect(box2, to: box5, connectionProperties: .init(targetHead: .filledVee))
 
         let graphics = GraphicsCocoa()
         let solver = try graph.makeSolver(graphics: graphics)
@@ -172,7 +180,7 @@ final class BoxesAndArrowsTests: XCTestCase {
         graph.add(box: up)
         graph.add(box: center)
         graph.add(box: down)
-        graph.connect(down, to: up, targetHead: .filledVee)
+        graph.connect(down, to: up, connectionProperties: .init(targetHead: .filledVee))
 
         graph.add(boxStyle: boxStyle1)
         graph.add(boxStyle: boxStyle2)
