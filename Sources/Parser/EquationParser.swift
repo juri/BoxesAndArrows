@@ -6,7 +6,7 @@ public enum EquationPart: Equatable {
     case relation(Relation)
     case constant(Double)
 
-    public struct Variable: Equatable {
+    public struct Variable: Hashable {
         public let head: String
         public let tail: [String]
     }
