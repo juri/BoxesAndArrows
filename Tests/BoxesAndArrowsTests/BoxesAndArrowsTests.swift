@@ -198,4 +198,22 @@ final class BoxesAndArrowsTests: XCTestCase {
         print("got image:", image)
         print()
     }
+
+    func testDrawSpec() throws {
+        let input = """
+        node-style style1 { background-color: #FF90F4; text-color: #000000; }
+        node-style style2 { background-color: #00BFC8; text-color: #FFFFFF; }
+
+        node n1 { style: style1 }
+        node n2 { style: style2 }
+
+        connect n1 n2 { head2: filled_vee }
+        constrain n1.left == n2.right + 30.0
+        """
+
+        let graphics = GraphicsCocoa()
+        let image = try drawSpec(input, graphics: graphics)
+        print("got image:", image)
+        print()
+    }
 }
