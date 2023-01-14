@@ -35,6 +35,18 @@ final class KeyValueTests: XCTestCase {
         )
     }
 
+    func testColorFormats() throws {
+        let input = "{ background-color: #aabbccdd; text-color: black; }"
+        let output = try blockParser.parse(input)
+        XCTAssertEqual(
+            output,
+            [
+                BlockField.color(BlockField.ColorField(fieldID: .backgroundColor, value: Color(hex: 0xAA_BB_CC_DD))),
+                BlockField.color(BlockField.ColorField(fieldID: .textColor, value: Color(hex: 0x00_00_00_FF))),
+            ]
+        )
+    }
+
     func testMultipleFields() throws {
         let inputs: [Subcase<String>] = [
             Subcase(

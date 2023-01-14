@@ -64,6 +64,10 @@ struct NamedColor: ParserPrinter {
         }
         throw ParsingError()
     }
+
+    static let parser = ParsePrint {
+        Prefix(while: { !($0.isWhitespace || $0 == ";") }).pipe(NamedColor.init)
+    }
 }
 
 public enum ColorFieldID: String, CaseIterable {
@@ -191,7 +195,7 @@ let colorParse = Parse {
         rrggbbHexColor
         rgbaHexColor
         rgbHexColor
-        From(.substring) { NamedColor() }
+        From(.substring) { NamedColor.parser }
     }
 }
 
