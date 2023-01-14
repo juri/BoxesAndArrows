@@ -181,7 +181,7 @@ public enum TopLevelDecl: Equatable {
     case nodeStyle(NodeStyle)
     case node(Node)
     case connection(Connection)
-    case constraint(ValidEquationMember)
+    case constraint([EquationPart])
 
     public struct NodeStyle: Equatable {
         public let name: String
@@ -267,7 +267,7 @@ let constraintParser = ParsePrint {
     Whitespace(.horizontal)
     EquationPart.manyParser
     Whitespace()
-}.map(ValidEquationMember.ValidatingEquationConversion())
+}
 
 let topLevelParser = Many {
     OneOf {

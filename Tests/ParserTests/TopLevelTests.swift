@@ -43,25 +43,13 @@ final class TopLevelTests: XCTestCase {
                     )
                 ),
                 .constraint(
-                    .term(
-                        .variable(
-                            Parser.EquationPart.Variable(head: "n1", tail: ["left"]),
-                            .relation(
-                                Parser.ValidEquationMember.Relation(
-                                    part: .eq,
-                                    next: .variable(
-                                        Parser.EquationPart.Variable(head: "n2", tail: ["right"]),
-                                        .operation(
-                                            Parser.ValidEquationMember.Operation(
-                                                part: .add,
-                                                next: .constant(30.0, nil)
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
+                    [
+                        .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
+                        .relation(Parser.EquationPart.Relation.eq),
+                        .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
+                        .operation(Parser.EquationPart.Operation.add),
+                        .constant(30.0),
+                    ]
                 ),
             ]
         )
