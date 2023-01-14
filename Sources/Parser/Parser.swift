@@ -277,3 +277,7 @@ let topLevelParser = Many {
         From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
     }
 }
+
+public func parse(_ spec: String) throws -> [TopLevelDecl] {
+    try topLevelParser.parse(spec)
+}
