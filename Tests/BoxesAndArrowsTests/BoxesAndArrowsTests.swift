@@ -209,6 +209,7 @@ final class BoxesAndArrowsTests: XCTestCase {
 
         connect n1 n2 { head1: filled_vee; head2: filled_vee }
         constrain n1.left == n2.right + 30.0
+        constrain n1.top == n2.top
         """
 
         let graphics = GraphicsCocoa()
