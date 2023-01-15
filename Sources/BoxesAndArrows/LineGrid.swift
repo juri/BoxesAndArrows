@@ -307,13 +307,13 @@ extension AccessGrid {
                             guard $0.1 == $1.1 else { return $0.1 < $1.1 }
                             return $0.2 > $1.2
                         })
-                    return directions[0].0
-                }
+                    return [directions[0].0, directions[1].0]
+                } ?? [AccessDirection]()
                 let thisInsideBox = rectInsideBox(cellRect)
 
                 if gridY <= yStart {
                     cells[index].up = false
-                } else if outsideDirection == .up {
+                } else if outsideDirection.contains(.up) {
                     cells[index].up = true
                 } else {
                     var neighbor = cellRect
@@ -323,7 +323,7 @@ extension AccessGrid {
 
                 if gridX >= gridWidth - 1 {
                     cells[index].right = false
-                } else if outsideDirection == .right {
+                } else if outsideDirection.contains(.right) {
                     cells[index].right = true
                 } else {
                     var neighbor = cellRect
@@ -333,7 +333,7 @@ extension AccessGrid {
 
                 if gridY >= gridHeight - 1 {
                     cells[index].down = false
-                } else if outsideDirection == .down {
+                } else if outsideDirection.contains(.down) {
                     cells[index].down = true
                 } else {
                     var neighbor = cellRect
@@ -343,7 +343,7 @@ extension AccessGrid {
 
                 if gridX <= xStart {
                     cells[index].left = false
-                } else if outsideDirection == .left {
+                } else if outsideDirection.contains(.left) {
                     cells[index].left = true
                 } else {
                     var neighbor = cellRect
