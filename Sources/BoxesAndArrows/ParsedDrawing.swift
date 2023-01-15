@@ -17,7 +17,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
             boxStyles[boxStyle.id] = boxStyle
         case let .box(node):
             nodes[node.name] = node
-        case let .connection(connection):
+        case let .arrow(connection):
             connections.append(connection)
         case let .constraint(equationPart):
             constraints.append(equationPart)

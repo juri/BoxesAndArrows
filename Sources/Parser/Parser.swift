@@ -180,7 +180,7 @@ let blockParser = Parse {
 public enum TopLevelDecl: Equatable {
     case boxStyle(BoxStyle)
     case box(Box)
-    case connection(Arrow)
+    case arrow(Arrow)
     case constraint([EquationPart])
 
     public struct BoxStyle: Equatable {
@@ -273,7 +273,7 @@ let topLevelParser = Many {
     OneOf {
         nodeStyleParser.map(.case(TopLevelDecl.boxStyle))
         nodeParser.map(.case(TopLevelDecl.box))
-        connectParser.map(.case(TopLevelDecl.connection))
+        connectParser.map(.case(TopLevelDecl.arrow))
         From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
     }
 }

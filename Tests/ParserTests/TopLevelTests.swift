@@ -35,7 +35,7 @@ final class TopLevelTests: XCTestCase {
                         name: "n2", fields: [.variable(BlockField.VariableField(fieldID: .style, value: "style1"))]
                     )
                 ),
-                .connection(
+                .arrow(
                     TopLevelDecl.Arrow(
                         node1: "n1",
                         node2: "n2",
