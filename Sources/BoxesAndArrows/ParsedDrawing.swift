@@ -7,7 +7,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
     var graph = Graph()
     var boxStyles = [BoxStyle.ID: BoxStyle]()
     var nodes = [String: TopLevelDecl.Box]()
-    var connections = [TopLevelDecl.Connection]()
+    var connections = [TopLevelDecl.Arrow]()
     var constraints = [[EquationPart]]()
 
     for decl in decls {

@@ -180,7 +180,7 @@ let blockParser = Parse {
 public enum TopLevelDecl: Equatable {
     case boxStyle(BoxStyle)
     case box(Box)
-    case connection(Connection)
+    case connection(Arrow)
     case constraint([EquationPart])
 
     public struct BoxStyle: Equatable {
@@ -193,7 +193,7 @@ public enum TopLevelDecl: Equatable {
         public let fields: [BlockField]
     }
 
-    public struct Connection: Equatable {
+    public struct Arrow: Equatable {
         public let node1: String
         public let node2: String
         public let fields: [BlockField]
@@ -220,10 +220,10 @@ extension TopLevelDecl.Box {
     }
 }
 
-extension TopLevelDecl.Connection {
+extension TopLevelDecl.Arrow {
     struct Conv: Conversion {
         typealias Input = (Substring, Substring, [BlockField])
-        typealias Output = TopLevelDecl.Connection
+        typealias Output = TopLevelDecl.Arrow
 
         func apply(_ input: Input) throws -> Output {
             .init(node1: String(input.0), node2: String(input.1), fields: input.2)
@@ -251,7 +251,7 @@ let nodeParser = ParsePrint(TopLevelDecl.Box.Conv()) {
     Whitespace()
 }
 
-let connectParser = ParsePrint(TopLevelDecl.Connection.Conv()) {
+let connectParser = ParsePrint(TopLevelDecl.Arrow.Conv()) {
     "connect".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
