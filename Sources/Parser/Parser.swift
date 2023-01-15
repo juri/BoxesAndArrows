@@ -233,7 +233,7 @@ extension TopLevelDecl.Arrow {
     }
 }
 
-let nodeStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
+let boxStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
     "box-style".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
@@ -242,7 +242,7 @@ let nodeStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
     Whitespace()
 }
 
-let nodeParser = ParsePrint(TopLevelDecl.Box.Conv()) {
+let boxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
     "box".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
@@ -271,8 +271,8 @@ let constraintParser = ParsePrint {
 
 let topLevelParser = Many {
     OneOf {
-        nodeStyleParser.map(.case(TopLevelDecl.boxStyle))
-        nodeParser.map(.case(TopLevelDecl.box))
+        boxStyleParser.map(.case(TopLevelDecl.boxStyle))
+        boxParser.map(.case(TopLevelDecl.box))
         connectParser.map(.case(TopLevelDecl.arrow))
         From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
     }
