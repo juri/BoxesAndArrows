@@ -8,11 +8,11 @@ import Parsing
 
  // comment
 
- node box1 {
+ box box1 {
      label: "Hello"
      style: style1
  }
- node box2 { style: style2 }
+ box box2 { style: style2 }
 
  connect box1 box2 { head1: line; head2: filled-vee }
 
@@ -243,7 +243,7 @@ let nodeStyleParser = ParsePrint(TopLevelDecl.NodeStyle.Conv()) {
 }
 
 let nodeParser = ParsePrint(TopLevelDecl.Node.Conv()) {
-    "node".utf8
+    "box".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Whitespace(.horizontal)

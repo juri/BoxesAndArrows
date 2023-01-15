@@ -7,8 +7,8 @@ final class TopLevelTests: XCTestCase {
         let input = """
         box-style style1 { background-color: #11223344 }
 
-        node n1 { style: style1 }
-        node n2 { style: style1 }
+        box n1 { style: style1 }
+        box n2 { style: style1 }
 
         connect n1 n2 { head1: filledVee }
         constrain n1.left == n2.right + 30.0

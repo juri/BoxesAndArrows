@@ -204,8 +204,8 @@ final class BoxesAndArrowsTests: XCTestCase {
         box-style style1 { background-color: #FF90F4; text-color: black; }
         box-style style2 { background-color: #00BFC8; text-color: white; }
 
-        node n1 { style: style1 }
-        node n2 { style: style2 }
+        box n1 { style: style1 }
+        box n2 { style: style2 }
 
         connect n1 n2 { head1: filled_vee; head2: filled_vee; line-width: 4.0 }
         constrain n1.left == n2.right + 30.0
