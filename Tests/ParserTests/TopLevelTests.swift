@@ -18,7 +18,7 @@ final class TopLevelTests: XCTestCase {
             output,
             [
                 .nodeStyle(
-                    TopLevelDecl.NodeStyle(
+                    TopLevelDecl.BoxStyle(
                         name: "style1",
                         fields: [
                             .color(BlockField.ColorField(fieldID: .backgroundColor, value: Color(hex: 0x11_22_33_44))),

@@ -250,7 +250,7 @@ enum EquationSidePart {
     }
 }
 
-private func boxStyle(from nodeStyle: TopLevelDecl.NodeStyle) throws -> BoxStyle {
+private func boxStyle(from nodeStyle: TopLevelDecl.BoxStyle) throws -> BoxStyle {
     var boxStyle = BoxStyle(id: .init(nodeStyle.name))
     for field in nodeStyle.fields {
         switch field {
