@@ -26,12 +26,12 @@ final class TopLevelTests: XCTestCase {
                     )
                 ),
                 .node(
-                    TopLevelDecl.Node(
+                    TopLevelDecl.Box(
                         name: "n1", fields: [.variable(BlockField.VariableField(fieldID: .style, value: "style1"))]
                     )
                 ),
                 .node(
-                    TopLevelDecl.Node(
+                    TopLevelDecl.Box(
                         name: "n2", fields: [.variable(BlockField.VariableField(fieldID: .style, value: "style1"))]
                     )
                 ),

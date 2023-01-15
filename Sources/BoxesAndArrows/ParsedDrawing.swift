@@ -6,7 +6,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
     let decls = try parse(spec)
     var graph = Graph()
     var boxStyles = [BoxStyle.ID: BoxStyle]()
-    var nodes = [String: TopLevelDecl.Node]()
+    var nodes = [String: TopLevelDecl.Box]()
     var connections = [TopLevelDecl.Connection]()
     var constraints = [[EquationPart]]()
 
@@ -287,7 +287,7 @@ struct EquationSideFormatError: Error {
 }
 
 private func box(
-    from node: TopLevelDecl.Node,
+    from node: TopLevelDecl.Box,
     styles: [BoxStyle.ID: BoxStyle]
 ) throws -> (Box, BoxStyle?) {
     var parentStyle: BoxStyle.ID?

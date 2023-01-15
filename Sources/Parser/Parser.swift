@@ -179,7 +179,7 @@ let blockParser = Parse {
 
 public enum TopLevelDecl: Equatable {
     case nodeStyle(NodeStyle)
-    case node(Node)
+    case node(Box)
     case connection(Connection)
     case constraint([EquationPart])
 
@@ -188,7 +188,7 @@ public enum TopLevelDecl: Equatable {
         public let fields: [BlockField]
     }
 
-    public struct Node: Equatable {
+    public struct Box: Equatable {
         public let name: String
         public let fields: [BlockField]
     }
@@ -210,10 +210,10 @@ extension TopLevelDecl.NodeStyle {
     }
 }
 
-extension TopLevelDecl.Node {
+extension TopLevelDecl.Box {
     struct Conv: Conversion {
         typealias Input = (Substring, [BlockField])
-        typealias Output = TopLevelDecl.Node
+        typealias Output = TopLevelDecl.Box
 
         func apply(_ input: Input) throws -> Output { .init(name: String(input.0), fields: input.1) }
         func unapply(_ output: Output) throws -> Input { (output.name[...], output.fields) }
@@ -242,7 +242,7 @@ let nodeStyleParser = ParsePrint(TopLevelDecl.NodeStyle.Conv()) {
     Whitespace()
 }
 
-let nodeParser = ParsePrint(TopLevelDecl.Node.Conv()) {
+let nodeParser = ParsePrint(TopLevelDecl.Box.Conv()) {
     "box".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
