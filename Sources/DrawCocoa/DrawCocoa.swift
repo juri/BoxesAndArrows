@@ -96,11 +96,13 @@ extension DrawCocoa: Drawing {
 
         case let .drawPath(.stroke(style)):
             context.setStrokeColor(style.color.cgColor)
+            context.setLineWidth(style.lineWidth)
             context.drawPath(using: .stroke)
 
         case let .drawPath(.fillStroke(style)):
             context.setFillColor(style.fill.color.cgColor)
             context.setStrokeColor(style.stroke.color.cgColor)
+            context.setLineWidth(style.stroke.lineWidth)
             context.drawPath(using: .fillStroke)
 
         case let .move(point):

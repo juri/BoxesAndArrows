@@ -103,6 +103,7 @@ public struct Box {
 }
 
 public struct Arrow {
+    public var lineWidth: Double = 1.0
     public var source: Box.ID
     public var sourceHead: ArrowHead = .line
     public var target: Box.ID
@@ -127,9 +128,11 @@ extension Arrow {
         source: Box,
         sourceHead: ArrowHead = .line,
         target: Box,
-        targetHead: ArrowHead = .line
+        targetHead: ArrowHead = .line,
+        lineWidth: Double = 1.0
     ) {
         self.init(
+            lineWidth: lineWidth,
             source: source.id,
             sourceHead: sourceHead,
             target: target.id,
@@ -183,9 +186,9 @@ public struct Graph {
             source: source,
             sourceHead: connectionProperties.sourceHead,
             target: target,
-            targetHead: connectionProperties.targetHead
+            targetHead: connectionProperties.targetHead,
+            lineWidth: connectionProperties.lineWidth
         ))
-        // TODO: line width
     }
 
     var frame: Rectangle {

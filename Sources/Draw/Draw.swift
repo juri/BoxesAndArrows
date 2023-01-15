@@ -152,11 +152,14 @@ public enum DrawMethod {
 
 public struct StrokeStyle {
     public var color: Color
+    public var lineWidth: Double
 
     public init(
-        color: Color
+        color: Color,
+        lineWidth: Double = 1.0
     ) {
         self.color = color
+        self.lineWidth = lineWidth
     }
 }
 

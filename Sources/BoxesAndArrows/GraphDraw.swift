@@ -81,14 +81,18 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
             commands.append(.addLine(accessGrid.point(at: coordinate)))
         }
         commands.append(.addLine(lineEnd))
-        commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
+        commands.append(.drawPath(.stroke(StrokeStyle(color: .black, lineWidth: arrow.lineWidth))))
 
         switch arrow.sourceHead {
         case .line:
             break
         case .filledVee:
             guard let tailStart = simplifiedTail.first else { break }
-            commands.append(contentsOf: filledVeeCommands(point: lineStart, previous: accessGrid.point(at: tailStart)))
+            commands.append(contentsOf: filledVeeCommands(
+                point: lineStart,
+                previous: accessGrid.point(at: tailStart),
+                lineWidth: arrow.lineWidth
+            ))
         }
 
         switch arrow.targetHead {
@@ -96,7 +100,11 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
             break
         case .filledVee:
             guard let last = simplifiedTail.last else { break }
-            commands.append(contentsOf: filledVeeCommands(point: lineEnd, previous: accessGrid.point(at: last)))
+            commands.append(contentsOf: filledVeeCommands(
+                point: lineEnd,
+                previous: accessGrid.point(at: last),
+                lineWidth: arrow.lineWidth
+            ))
         }
     }
 
@@ -183,10 +191,11 @@ func findLineEnd(
 
 func filledVeeCommands(
     point: Point,
-    previous: Point
+    previous: Point,
+    lineWidth: Double
 ) -> [DrawCommand] {
-    let arrowLength = 4.0
-    let arrowWidth = 3.0
+    let arrowLength = 3.0 + lineWidth
+    let arrowWidth = 2.0 + lineWidth
 
     var output: [DrawCommand] = [.move(point)]
 
