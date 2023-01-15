@@ -178,7 +178,7 @@ let blockParser = Parse {
 }
 
 public enum TopLevelDecl: Equatable {
-    case nodeStyle(BoxStyle)
+    case boxStyle(BoxStyle)
     case box(Box)
     case connection(Connection)
     case constraint([EquationPart])
@@ -271,7 +271,7 @@ let constraintParser = ParsePrint {
 
 let topLevelParser = Many {
     OneOf {
-        nodeStyleParser.map(.case(TopLevelDecl.nodeStyle))
+        nodeStyleParser.map(.case(TopLevelDecl.boxStyle))
         nodeParser.map(.case(TopLevelDecl.box))
         connectParser.map(.case(TopLevelDecl.connection))
         From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }

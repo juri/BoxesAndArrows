@@ -12,7 +12,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
 
     for decl in decls {
         switch decl {
-        case let .nodeStyle(nodeStyle):
+        case let .boxStyle(nodeStyle):
             let boxStyle = try boxStyle(from: nodeStyle)
             boxStyles[boxStyle.id] = boxStyle
         case let .box(node):

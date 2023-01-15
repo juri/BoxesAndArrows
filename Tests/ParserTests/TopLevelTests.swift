@@ -17,7 +17,7 @@ final class TopLevelTests: XCTestCase {
         assertEqual(
             output,
             [
-                .nodeStyle(
+                .boxStyle(
                     TopLevelDecl.BoxStyle(
                         name: "style1",
                         fields: [
