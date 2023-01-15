@@ -37,8 +37,8 @@ final class TopLevelTests: XCTestCase {
                 ),
                 .arrow(
                     TopLevelDecl.Arrow(
-                        node1: "n1",
-                        node2: "n2",
+                        box1: "n1",
+                        box2: "n2",
                         fields: [.variable(BlockField.VariableField(fieldID: .head1, value: "filledVee"))]
                     )
                 ),

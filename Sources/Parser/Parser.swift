@@ -194,8 +194,8 @@ public enum TopLevelDecl: Equatable {
     }
 
     public struct Arrow: Equatable {
-        public let node1: String
-        public let node2: String
+        public let box1: String
+        public let box2: String
         public let fields: [BlockField]
     }
 }
@@ -226,10 +226,10 @@ extension TopLevelDecl.Arrow {
         typealias Output = TopLevelDecl.Arrow
 
         func apply(_ input: Input) throws -> Output {
-            .init(node1: String(input.0), node2: String(input.1), fields: input.2)
+            .init(box1: String(input.0), box2: String(input.1), fields: input.2)
         }
 
-        func unapply(_ output: Output) throws -> Input { (output.node1[...], output.node2[...], output.fields) }
+        func unapply(_ output: Output) throws -> Input { (output.box1[...], output.box2[...], output.fields) }
     }
 }
 

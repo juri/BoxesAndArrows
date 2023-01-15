@@ -38,11 +38,11 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
     }
 
     for connection in connections {
-        guard let box1 = boxes[.init(rawValue: connection.node1)] else {
-            throw UndefinedReferenceError(name: connection.node1)
+        guard let box1 = boxes[.init(rawValue: connection.box1)] else {
+            throw UndefinedReferenceError(name: connection.box1)
         }
-        guard let box2 = boxes[.init(rawValue: connection.node2)] else {
-            throw UndefinedReferenceError(name: connection.node2)
+        guard let box2 = boxes[.init(rawValue: connection.box2)] else {
+            throw UndefinedReferenceError(name: connection.box2)
         }
 
         let properties = try connectionProperties(from: connection.fields)
