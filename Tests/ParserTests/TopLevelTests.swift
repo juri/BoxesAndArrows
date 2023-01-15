@@ -5,7 +5,7 @@ import XCTest
 final class TopLevelTests: XCTestCase {
     func test() throws {
         let input = """
-        node-style style1 { background-color: #11223344 }
+        box-style style1 { background-color: #11223344 }
 
         node n1 { style: style1 }
         node n2 { style: style1 }

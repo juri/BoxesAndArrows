@@ -2,7 +2,7 @@ import Draw
 import Parsing
 
 /*
- node-style style1 {
+ box-style style1 {
      background-color: #aabbcc; text-color: #00000011
  }
 
@@ -234,7 +234,7 @@ extension TopLevelDecl.Connection {
 }
 
 let nodeStyleParser = ParsePrint(TopLevelDecl.NodeStyle.Conv()) {
-    "node-style".utf8
+    "box-style".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Whitespace(.horizontal)
