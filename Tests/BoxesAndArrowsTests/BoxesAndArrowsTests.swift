@@ -201,8 +201,8 @@ final class BoxesAndArrowsTests: XCTestCase {
 
     func testDrawSpec() throws {
         let input = """
-        node-style style1 { background-color: #FF90F4; text-color: #000000; }
-        node-style style2 { background-color: #00BFC8; text-color: #FFFFFF; }
+        node-style style1 { background-color: #FF90F4; text-color: black; }
+        node-style style2 { background-color: #00BFC8; text-color: white; }
 
         node n1 { style: style1 }
         node n2 { style: style2 }
