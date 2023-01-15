@@ -12,11 +12,11 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
 
     for decl in decls {
         switch decl {
-        case let .boxStyle(nodeStyle):
-            let boxStyle = try boxStyle(from: nodeStyle)
+        case let .boxStyle(style):
+            let boxStyle = try boxStyle(from: style)
             boxStyles[boxStyle.id] = boxStyle
-        case let .box(node):
-            parsedBoxes[node.name] = node
+        case let .box(box):
+            parsedBoxes[box.name] = box
         case let .arrow(connection):
             parsedArrows.append(connection)
         case let .constraint(equationPart):
@@ -25,8 +25,8 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
     }
 
     var boxes = [Box.ID: Box]()
-    for (_, node) in parsedBoxes {
-        let (box, style) = try box(from: node, styles: boxStyles)
+    for (_, parsedBox) in parsedBoxes {
+        let (box, style) = try box(from: parsedBox, styles: boxStyles)
         graph.add(box: box)
         boxes[box.id] = box
         if let style {
@@ -250,9 +250,9 @@ enum EquationSidePart {
     }
 }
 
-private func boxStyle(from nodeStyle: TopLevelDecl.BoxStyle) throws -> BoxStyle {
-    var boxStyle = BoxStyle(id: .init(nodeStyle.name))
-    for field in nodeStyle.fields {
+private func boxStyle(from style: TopLevelDecl.BoxStyle) throws -> BoxStyle {
+    var boxStyle = BoxStyle(id: .init(style.name))
+    for field in style.fields {
         switch field {
         case let .color(colorField):
             switch colorField.fieldID {
@@ -287,13 +287,13 @@ struct EquationSideFormatError: Error {
 }
 
 private func box(
-    from node: TopLevelDecl.Box,
+    from parsedBox: TopLevelDecl.Box,
     styles: [BoxStyle.ID: BoxStyle]
 ) throws -> (Box, BoxStyle?) {
     var parentStyle: BoxStyle.ID?
-    var style = BoxStyle(id: .init("__!__node_\(node.name)"))
+    var style = BoxStyle(id: .init("__!__box_\(parsedBox.name)"))
     var label: String?
-    for field in node.fields {
+    for field in parsedBox.fields {
         switch field {
         case let .color(colorField):
             switch colorField.fieldID {
@@ -340,8 +340,8 @@ private func box(
         boxStyleID = nil
     }
     let box = Box(
-        id: Box.ID(rawValue: node.name),
-        label: label ?? node.name,
+        id: Box.ID(rawValue: parsedBox.name),
+        label: label ?? parsedBox.name,
         style: boxStyleID
     )
     return (box, returnedStyle)
