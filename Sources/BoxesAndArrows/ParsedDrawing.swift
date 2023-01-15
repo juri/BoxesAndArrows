@@ -6,8 +6,8 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
     let decls = try parse(spec)
     var graph = Graph()
     var boxStyles = [BoxStyle.ID: BoxStyle]()
-    var nodes = [String: TopLevelDecl.Box]()
-    var connections = [TopLevelDecl.Arrow]()
+    var parsedBoxes = [String: TopLevelDecl.Box]()
+    var parsedArrows = [TopLevelDecl.Arrow]()
     var constraints = [[EquationPart]]()
 
     for decl in decls {
@@ -16,16 +16,16 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
             let boxStyle = try boxStyle(from: nodeStyle)
             boxStyles[boxStyle.id] = boxStyle
         case let .box(node):
-            nodes[node.name] = node
+            parsedBoxes[node.name] = node
         case let .arrow(connection):
-            connections.append(connection)
+            parsedArrows.append(connection)
         case let .constraint(equationPart):
             constraints.append(equationPart)
         }
     }
 
     var boxes = [Box.ID: Box]()
-    for (_, node) in nodes {
+    for (_, node) in parsedBoxes {
         let (box, style) = try box(from: node, styles: boxStyles)
         graph.add(box: box)
         boxes[box.id] = box
@@ -37,7 +37,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
         graph.add(boxStyle: style)
     }
 
-    for connection in connections {
+    for connection in parsedArrows {
         guard let box1 = boxes[.init(rawValue: connection.box1)] else {
             throw UndefinedReferenceError(name: connection.box1)
         }
