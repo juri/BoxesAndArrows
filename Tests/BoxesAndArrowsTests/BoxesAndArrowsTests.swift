@@ -207,7 +207,7 @@ final class BoxesAndArrowsTests: XCTestCase {
         node n1 { style: style1 }
         node n2 { style: style2 }
 
-        connect n1 n2 { head2: filled_vee }
+        connect n1 n2 { head1: filled_vee; head2: filled_vee }
         constrain n1.left == n2.right + 30.0
         """
 

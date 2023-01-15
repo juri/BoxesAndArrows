@@ -83,6 +83,14 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         commands.append(.addLine(lineEnd))
         commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
 
+        switch arrow.sourceHead {
+        case .line:
+            break
+        case .filledVee:
+            guard let tailStart = simplifiedTail.first else { break }
+            commands.append(contentsOf: filledVeeCommands(point: lineStart, previous: accessGrid.point(at: tailStart)))
+        }
+
         switch arrow.targetHead {
         case .line:
             break
