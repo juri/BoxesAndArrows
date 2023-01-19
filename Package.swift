@@ -16,6 +16,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/compnerd/cassowary.git", from: "0.0.1"),
         .package(url: "https://github.com/pointfreeco/swift-parsing.git", from: "0.11.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
         .package(url: "https://github.com/pointfreeco/swift-tagged.git", from: "0.8.0"),
     ],
     targets: [
@@ -50,7 +51,10 @@ let package = Package(
         ),
         .testTarget(
             name: "BoxesAndArrowsTests",
-            dependencies: ["BoxesAndArrows"]
+            dependencies: [
+                .snapshot,
+                "BoxesAndArrows",
+            ]
         ),
         .testTarget(
             name: "ParserTests",
@@ -66,5 +70,6 @@ let package = Package(
 extension PackageDescription.Target.Dependency {
     static let cassowary: PackageDescription.Target.Dependency = .product(name: "cassowary", package: "cassowary")
     static let parsing: PackageDescription.Target.Dependency = .product(name: "Parsing", package: "swift-parsing")
+    static let snapshot: PackageDescription.Target.Dependency = .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
     static let tagged: PackageDescription.Target.Dependency = .product(name: "Tagged", package: "swift-tagged")
 }
