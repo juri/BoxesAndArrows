@@ -1,15 +1,12 @@
 import Cocoa
 import Draw
 
-func attributedString(for box: Box) -> AttributedString {
-    var ats = AttributedString(box.label)
-    ats.font = NSFont.systemFont(ofSize: 16)
-    ats.paragraphStyle = {
-        let paragraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
-        paragraphStyle.alignment = .center
-        return paragraphStyle
-    }()
-    return ats
+func attributedText(for box: Box) -> AttributedText {
+    AttributedText(
+        text: box.label,
+        textAlignment: .center,
+        font: Font.systemDefault(size: 16)
+    )
 }
 
 func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
@@ -19,9 +16,9 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
     ]
 
     for box in graph.boxes.values {
-        var attributedString = attributedString(for: box)
+        var attributedText = attributedText(for: box)
         if let textColor = graph.boxStyles.computedStyle(box: box, keyPath: \.textColor) {
-            attributedString.textColor = textColor
+            attributedText.textColor = textColor
         }
         commands.append(.addRect(box.frame))
         if let backgroundColor = graph.boxStyles.computedStyle(box: box, keyPath: \.backgroundColor) {
@@ -34,7 +31,7 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         } else {
             commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
         }
-        commands.append(.draw(text: attributedString, point: box.frame.origin))
+        commands.append(.draw(text: attributedText, point: box.frame.origin))
     }
 
     let connectionPointRegister = ConnectionPointRegister()

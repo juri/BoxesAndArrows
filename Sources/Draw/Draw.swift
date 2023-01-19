@@ -134,10 +134,29 @@ extension Color {
     }
 }
 
+public struct AttributedText {
+    public var text: String
+    public var textAlignment: TextAlignment? = nil
+    public var textColor: Color? = nil
+    public var font: Font? = nil
+
+    public init(
+        text: String,
+        textAlignment: TextAlignment? = nil,
+        textColor: Color? = nil,
+        font: Font? = nil
+    ) {
+        self.text = text
+        self.textAlignment = textAlignment
+        self.textColor = textColor
+        self.font = font
+    }
+}
+
 public enum DrawCommand {
     case addLine(Point)
     case addRect(Rectangle)
-    case draw(text: AttributedString, point: Point)
+    case draw(text: AttributedText, point: Point)
     case fill([Rectangle])
     case drawPath(DrawMethod)
     case move(Point)
@@ -186,11 +205,19 @@ public struct FillStrokeStyle {
     }
 }
 
+public enum Font: Hashable {
+    case systemDefault(size: Double)
+}
+
+public enum TextAlignment: Hashable {
+    case center
+}
+
 public protocol Graphics<Image> {
     associatedtype Image
 
     func makeDrawing(size: Size) -> any Drawing<Image>
-    func measure(attributedString: AttributedString) -> Size
+    func measure(attributedText: AttributedText) -> Size
 }
 
 public protocol Drawing<Image> {

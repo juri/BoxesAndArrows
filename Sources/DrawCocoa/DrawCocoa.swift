@@ -12,13 +12,24 @@ extension GraphicsCocoa: Graphics {
         DrawCocoa(size: CGSize(size))
     }
 
-    public func measure(attributedString: AttributedString) -> Size {
-        let nsattr = NSAttributedString(attributedString)
+    public func measure(attributedText: AttributedText) -> Size {
+        let attributedString = attributedText.attributedString
+        let nsattr = NSAttributedString(convertAttributes(in: attributedString))
         let boundingRect = nsattr.boundingRect(
             with: .init(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude),
             options: .usesLineFragmentOrigin
         )
         return Size(boundingRect.size)
+    }
+}
+
+extension AttributedText {
+    var attributedString: AttributedString {
+        var ats = AttributedString(self.text)
+        ats.textColor = self.textColor
+        ats.textAlignment = self.textAlignment
+        ats.font = self.font
+        return ats
     }
 }
 
@@ -76,13 +87,7 @@ extension DrawCocoa: Drawing {
             context.addRect(CGRect(rect))
 
         case let .draw(text: text, point: point):
-            let transformed = text.transformingAttributes(\.textColor) { transformer in
-                guard let value = transformer.value else { return }
-                transformer.replace(
-                    with: \.foregroundColor,
-                    value: NSColor(red: value.red, green: value.green, blue: value.blue, alpha: value.alpha)
-                )
-            }
+            let transformed = convertAttributes(in: text.attributedString)
             context.saveGState()
             NSAttributedString(transformed).draw(at: CGPoint(point))
             context.restoreGState()
@@ -112,6 +117,33 @@ extension DrawCocoa: Drawing {
             NSColor(color).setFill()
         }
     }
+}
+
+func convertAttributes(in attributedString: AttributedString) -> AttributedString {
+    attributedString
+        .transformingAttributes(\.textColor) { transformer in
+            guard let value = transformer.value else { return }
+            transformer.replace(
+                with: \.foregroundColor,
+                value: NSColor(red: value.red, green: value.green, blue: value.blue, alpha: value.alpha)
+            )
+        }
+        .transformingAttributes(\.font) { transformer in
+            guard let value = transformer.value else { return }
+            let realFont: NSFont
+            switch value {
+            case let .systemDefault(size: size): realFont = .systemFont(ofSize: size)
+            }
+            transformer.replace(with: \.font, value: realFont)
+        }
+        .transformingAttributes(\.textAlignment) { transformer in
+            guard let value = transformer.value else { return }
+            let paragraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+            switch value {
+            case .center: paragraphStyle.alignment = .center
+            }
+            transformer.replace(with: \.paragraphStyle, value: paragraphStyle)
+        }
 }
 
 extension CGPoint {

@@ -7,9 +7,9 @@ struct TestGraphics {
 }
 
 extension TestGraphics: Graphics {
-    func measure(attributedString: AttributedString) -> Draw.Size {
-        let chars = attributedString.characters
-        let lines = chars.split(separator: "\n")
+    func measure(attributedText: AttributedText) -> Draw.Size {
+        let string = attributedText.text
+        let lines = string.split(separator: "\n")
         let maxLineLength = lines.map(\.count).max()!
         return Size(width: Double(maxLineLength) * Self.charWidth, height: Double(lines.count) * Self.lineHeight)
     }

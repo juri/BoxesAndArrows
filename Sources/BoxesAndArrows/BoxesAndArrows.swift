@@ -241,7 +241,7 @@ extension Graph {
             try solver.add(constraint: box.right.variable <= self.right.variable - outerMargin)
             try solver.add(constraint: box.bottom.variable <= self.bottom.variable - outerMargin)
 
-            let size = graphics.measure(attributedString: attributedString(for: box))
+            let size = graphics.measure(attributedText: attributedText(for: box))
 
             try solver.add(constraint: box.height.variable >= 0)
             try solver.add(constraint: box.height.variable >= size.height)
