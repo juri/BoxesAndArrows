@@ -15,7 +15,7 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         .fill([graph.frame]),
     ]
 
-    for box in graph.boxes.values {
+    for box in graph.boxes.sorted(by: { $0.key < $1.key }).map(\.value) {
         var attributedText = attributedText(for: box)
         if let textColor = graph.boxStyles.computedStyle(box: box, keyPath: \.textColor) {
             attributedText.textColor = textColor
