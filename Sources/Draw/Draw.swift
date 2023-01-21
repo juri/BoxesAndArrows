@@ -1,5 +1,6 @@
 import Cocoa
 import Foundation
+import Numerics
 
 public struct Point {
     public var x: Double
@@ -9,8 +10,8 @@ public struct Point {
         x: Double,
         y: Double
     ) {
-        self.x = x
-        self.y = y
+        self.x = x.isApproximatelyEqual(to: 0) ? 0.0 : x
+        self.y = y.isApproximatelyEqual(to: 0) ? 0.0 : y
     }
 }
 
