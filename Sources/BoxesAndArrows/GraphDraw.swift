@@ -31,7 +31,10 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
         } else {
             commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
         }
-        commands.append(.draw(text: attributedText, point: box.frame.origin))
+        let textSize = graphics.measure(attributedText: attributedText)
+        let xOrigin = box.frame.minX + (box.frame.width / 2.0 - textSize.width / 2.0)
+        let yOrigin = box.frame.minY + (box.frame.height / 2.0 - textSize.height / 2.0)
+        commands.append(.draw(text: attributedText, point: Point(x: xOrigin, y: yOrigin)))
     }
 
     let connectionPointRegister = ConnectionPointRegister()
