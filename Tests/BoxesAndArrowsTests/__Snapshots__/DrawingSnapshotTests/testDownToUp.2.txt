@@ -1,0 +1,183 @@
+▿ 23 elements
+  ▿ DrawCommand
+    ▿ setFill: Color
+      - alpha: 1.0
+      - blue: 1.0
+      - green: 1.0
+      - red: 1.0
+  ▿ DrawCommand
+    ▿ fill: 1 element
+      ▿ Rectangle
+        ▿ origin: Point
+          - x: 0.0
+          - y: 0.0
+        ▿ size: Size
+          - height: 240.0
+          - width: 160.0
+  ▿ DrawCommand
+    ▿ addRect: Rectangle
+      ▿ origin: Point
+        - x: 50.0
+        - y: 110.0
+      ▿ size: Size
+        - height: 20.0
+        - width: 60.0
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ fillStroke: FillStrokeStyle
+        ▿ fill: FillStyle
+          ▿ color: Color
+            - alpha: 1.0
+            - blue: 0.0
+            - green: 0.0
+            - red: 1.0
+        ▿ stroke: StrokeStyle
+          ▿ color: Color
+            - alpha: 1.0
+            - blue: 0.0
+            - green: 0.0
+            - red: 0.0
+          - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ draw: (2 elements)
+      ▿ text: AttributedText
+        ▿ font: Optional<Font>
+          ▿ some: Font
+            ▿ systemDefault: (1 element)
+              - size: 16.0
+        - text: "center"
+        ▿ textAlignment: Optional<TextAlignment>
+          - some: TextAlignment.center
+        ▿ textColor: Optional<Color>
+          ▿ some: Color
+            - alpha: 1.0
+            - blue: 1.0
+            - green: 0.0
+            - red: 0.0
+      ▿ point: Point
+        - x: 50.0
+        - y: 110.0
+  ▿ DrawCommand
+    ▿ addRect: Rectangle
+      ▿ origin: Point
+        - x: 50.0
+        - y: 170.0
+      ▿ size: Size
+        - height: 20.0
+        - width: 40.0
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ stroke: StrokeStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+        - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ draw: (2 elements)
+      ▿ text: AttributedText
+        ▿ font: Optional<Font>
+          ▿ some: Font
+            ▿ systemDefault: (1 element)
+              - size: 16.0
+        - text: "down"
+        ▿ textAlignment: Optional<TextAlignment>
+          - some: TextAlignment.center
+        - textColor: Optional<Color>.none
+      ▿ point: Point
+        - x: 50.0
+        - y: 170.0
+  ▿ DrawCommand
+    ▿ addRect: Rectangle
+      ▿ origin: Point
+        - x: 50.0
+        - y: 50.0
+      ▿ size: Size
+        - height: 20.0
+        - width: 20.0
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ stroke: StrokeStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+        - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ draw: (2 elements)
+      ▿ text: AttributedText
+        ▿ font: Optional<Font>
+          ▿ some: Font
+            ▿ systemDefault: (1 element)
+              - size: 16.0
+        - text: "up"
+        ▿ textAlignment: Optional<TextAlignment>
+          - some: TextAlignment.center
+        ▿ textColor: Optional<Color>
+          ▿ some: Color
+            - alpha: 1.0
+            - blue: 1.0
+            - green: 0.0
+            - red: 0.0
+      ▿ point: Point
+        - x: 50.0
+        - y: 50.0
+  ▿ DrawCommand
+    ▿ move: Point
+      - x: 50.0
+      - y: 172.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 47.5
+      - y: 172.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 42.5
+      - y: 172.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 42.5
+      - y: 67.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 47.5
+      - y: 67.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 50.0
+      - y: 67.5
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ stroke: StrokeStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+        - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ move: Point
+      - x: 50.0
+      - y: 67.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 46.0
+      - y: 64.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 46.0
+      - y: 70.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 50.0
+      - y: 67.5
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ fill: FillStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0

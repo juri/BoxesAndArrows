@@ -1,0 +1,170 @@
+▿ 24 elements
+  ▿ DrawCommand
+    ▿ setFill: Color
+      - alpha: 1.0
+      - blue: 1.0
+      - green: 1.0
+      - red: 1.0
+  ▿ DrawCommand
+    ▿ fill: 1 element
+      ▿ Rectangle
+        ▿ origin: Point
+          - x: 0.0
+          - y: 0.0
+        ▿ size: Size
+          - height: 120.0
+          - width: 330.0
+  ▿ DrawCommand
+    ▿ addRect: Rectangle
+      ▿ origin: Point
+        - x: 130.0
+        - y: 50.0
+      ▿ size: Size
+        - height: 20.0
+        - width: 60.0
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ stroke: StrokeStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+        - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ draw: (2 elements)
+      ▿ text: AttributedText
+        ▿ font: Optional<Font>
+          ▿ some: Font
+            ▿ systemDefault: (1 element)
+              - size: 16.0
+        - text: "center"
+        ▿ textAlignment: Optional<TextAlignment>
+          - some: TextAlignment.center
+        - textColor: Optional<Color>.none
+      ▿ point: Point
+        - x: 130.0
+        - y: 50.0
+  ▿ DrawCommand
+    ▿ addRect: Rectangle
+      ▿ origin: Point
+        - x: 50.0
+        - y: 50.0
+      ▿ size: Size
+        - height: 20.0
+        - width: 40.0
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ stroke: StrokeStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+        - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ draw: (2 elements)
+      ▿ text: AttributedText
+        ▿ font: Optional<Font>
+          ▿ some: Font
+            ▿ systemDefault: (1 element)
+              - size: 16.0
+        - text: "left"
+        ▿ textAlignment: Optional<TextAlignment>
+          - some: TextAlignment.center
+        - textColor: Optional<Color>.none
+      ▿ point: Point
+        - x: 50.0
+        - y: 50.0
+  ▿ DrawCommand
+    ▿ addRect: Rectangle
+      ▿ origin: Point
+        - x: 230.0
+        - y: 50.0
+      ▿ size: Size
+        - height: 20.0
+        - width: 50.0
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ stroke: StrokeStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+        - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ draw: (2 elements)
+      ▿ text: AttributedText
+        ▿ font: Optional<Font>
+          ▿ some: Font
+            ▿ systemDefault: (1 element)
+              - size: 16.0
+        - text: "right"
+        ▿ textAlignment: Optional<TextAlignment>
+          - some: TextAlignment.center
+        - textColor: Optional<Color>.none
+      ▿ point: Point
+        - x: 230.0
+        - y: 50.0
+  ▿ DrawCommand
+    ▿ move: Point
+      - x: 87.5
+      - y: 50.0
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 87.5
+      - y: 47.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 87.5
+      - y: 42.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 197.5
+      - y: 42.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 197.5
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 227.5
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 230.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ stroke: StrokeStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+        - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ move: Point
+      - x: 230.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 226.0
+      - y: 49.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 226.0
+      - y: 55.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 230.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ fill: FillStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
