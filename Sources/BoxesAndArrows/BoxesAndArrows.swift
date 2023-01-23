@@ -244,14 +244,16 @@ extension Graph {
             let size = graphics.measure(attributedText: attributedText(for: box))
 
             try solver.add(constraint: box.height.variable >= 0)
+            try solver.add(constraint: box.height.variable == size.height, .weak)
             try solver.add(constraint: box.height.variable >= size.height)
             try solver.add(constraint: box.width.variable >= 0)
+            try solver.add(constraint: box.width.variable == size.width, .weak)
             try solver.add(constraint: box.width.variable >= size.width)
 
-            try solver.add(constraint: box.bottom.variable == box.top.variable + size.height)
-            try solver.add(constraint: box.centerY.variable == box.top.variable + size.height / 2.0)
-            try solver.add(constraint: box.right.variable == box.left.variable + size.width)
-            try solver.add(constraint: box.centerX.variable == box.left.variable + size.width / 2.0)
+            try solver.add(constraint: box.bottom.variable == box.top.variable + box.height.variable)
+            try solver.add(constraint: box.centerY.variable == box.top.variable + box.height.variable / 2.0)
+            try solver.add(constraint: box.right.variable == box.left.variable + box.width.variable)
+            try solver.add(constraint: box.centerX.variable == box.left.variable + box.width.variable / 2.0)
         }
 
         try solver.add(constraint: self.left.variable == 0)

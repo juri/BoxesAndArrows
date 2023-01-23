@@ -12,12 +12,12 @@
           - x: 0.0
           - y: 0.0
         ▿ size: Size
-          - height: 120.0
-          - width: 430.0
+          - height: 140.0
+          - width: 560.0
   ▿ DrawCommand
     ▿ addRect: Rectangle
       ▿ origin: Point
-        - x: 230.0
+        - x: 360.0
         - y: 50.0
       ▿ size: Size
         - height: 20.0
@@ -55,7 +55,7 @@
             - green: 0.0
             - red: 0.0
       ▿ point: Point
-        - x: 230.0
+        - x: 360.0
         - y: 50.0
   ▿ DrawCommand
     ▿ addRect: Rectangle
@@ -102,11 +102,11 @@
         - y: 60.0
   ▿ DrawCommand
     ▿ move: Point
-      - x: 230.0
+      - x: 360.0
       - y: 52.5
   ▿ DrawCommand
     ▿ addLine: Point
-      - x: 227.5
+      - x: 357.5
       - y: 52.5
   ▿ DrawCommand
     ▿ addLine: Point
@@ -127,19 +127,19 @@
         - lineWidth: 2.0
   ▿ DrawCommand
     ▿ move: Point
-      - x: 230.0
+      - x: 360.0
       - y: 52.5
   ▿ DrawCommand
     ▿ addLine: Point
-      - x: 225.0
+      - x: 355.0
       - y: 48.5
   ▿ DrawCommand
     ▿ addLine: Point
-      - x: 225.0
+      - x: 355.0
       - y: 56.5
   ▿ DrawCommand
     ▿ addLine: Point
-      - x: 230.0
+      - x: 360.0
       - y: 52.5
   ▿ DrawCommand
     ▿ drawPath: DrawMethod
