@@ -9,6 +9,7 @@ final class TopLevelTests: XCTestCase {
 
         box n1 { style: style1 }
         box n2 { style: style1 }
+        box n3
 
         connect n1 n2 { head1: filledVee }
         constrain n1.left == n2.right + 30.0
@@ -35,6 +36,7 @@ final class TopLevelTests: XCTestCase {
                         name: "n2", fields: [.variable(BlockField.VariableField(fieldID: .style, value: "style1"))]
                     )
                 ),
+                .box(TopLevelDecl.Box(name: "n3", fields: [])),
                 .arrow(
                     TopLevelDecl.Arrow(
                         box1: "n1",

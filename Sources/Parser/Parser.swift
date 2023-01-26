@@ -242,13 +242,26 @@ let boxStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
     Whitespace()
 }
 
-let boxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
+let styledBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
     "box".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Whitespace(.horizontal)
     blockParser
     Whitespace()
+}
+
+let plainBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
+    "box".utf8
+    Whitespace(.horizontal)
+    From(.substring) { Prefix(while: { !$0.isWhitespace }) }
+    Always([BlockField]())
+    Whitespace()
+}
+
+let boxParser = OneOf {
+    styledBoxParser
+    plainBoxParser
 }
 
 let connectParser = ParsePrint(TopLevelDecl.Arrow.Conv()) {
