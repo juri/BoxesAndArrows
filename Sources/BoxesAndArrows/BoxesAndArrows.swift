@@ -15,6 +15,10 @@ public struct BoxStyle {
     public var textColor: Color?
 }
 
+extension Tagged where Tag == BoxStyle.Tags.ID, RawValue == String {
+    static let `default` = BoxStyle.ID(rawValue: "default")
+}
+
 public struct BoxStyles {
     var styles: [BoxStyle.ID: BoxStyle]
 
@@ -39,7 +43,8 @@ public struct BoxStyles {
     }
 
     func computedStyle<T>(box: Box, keyPath: KeyPath<BoxStyle, T?>) -> T? {
-        guard let styleID = box.style, let style = self.styles[styleID] else {
+        let styleID = box.style ?? BoxStyle.ID.default
+        guard let style = self.styles[styleID] else {
             return nil
         }
         return self.computed(style: style, keyPath: keyPath)
