@@ -303,8 +303,8 @@ let constraintParser = ParsePrint {
 
 let lineComment = ParsePrint {
     Whitespace(.horizontal)
-    "//"
-    Prefix(while: { !$0.isNewline })
+    "//".utf8
+    From(.substring) { Prefix(while: { !$0.isNewline }) }
     Whitespace(1, .vertical)
 }
 
@@ -323,7 +323,7 @@ let topLevelParser = Many {
         boxParser.map(.case(TopLevelDecl.box))
         connectParser.map(.case(TopLevelDecl.arrow))
         From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
-        From(.substring) { topLevelLineComment.map(.case(TopLevelDecl.lineComment)) }
+        topLevelLineComment.map(.case(TopLevelDecl.lineComment))
     }
 }
 
