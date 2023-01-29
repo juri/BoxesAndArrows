@@ -184,57 +184,96 @@ public enum TopLevelDecl: Equatable {
     case constraint([EquationPart])
     case lineComment(LineComment)
 
+    public struct LineComment: Equatable {
+        public let comment: String
+    }
+
+    public enum EndOfLine: Equatable {
+        case lineComment(LineComment)
+        case none
+    }
+
     public struct BoxStyle: Equatable {
         public let name: String
         public let fields: [BlockField]
+        public let endOfLine: EndOfLine
     }
 
     public struct Box: Equatable {
         public let name: String
         public let fields: [BlockField]
+        public let endOfLine: EndOfLine
     }
 
     public struct Arrow: Equatable {
         public let box1: String
         public let box2: String
         public let fields: [BlockField]
+        public let endOfLine: EndOfLine
     }
+}
 
-    public struct LineComment: Equatable {
-        public let comment: String
+extension TopLevelDecl.LineComment {
+    init(comment: Substring) {
+        self.init(comment: String(comment))
     }
 }
 
 extension TopLevelDecl.BoxStyle {
     struct Conv: Conversion {
-        typealias Input = (Substring, [BlockField])
+        typealias Input = (Substring, [BlockField], TopLevelDecl.EndOfLine)
         typealias Output = TopLevelDecl.BoxStyle
 
-        func apply(_ input: Input) throws -> Output { .init(name: String(input.0), fields: input.1) }
-        func unapply(_ output: Output) throws -> Input { (output.name[...], output.fields) }
+        func apply(_ input: Input) throws -> Output {
+            TopLevelDecl.BoxStyle(
+                name: String(input.0),
+                fields: input.1,
+                endOfLine: input.2
+            )
+        }
+
+        func unapply(_ output: Output) throws -> Input {
+            (output.name[...], output.fields, output.endOfLine)
+        }
     }
 }
 
 extension TopLevelDecl.Box {
     struct Conv: Conversion {
-        typealias Input = (Substring, [BlockField])
+        typealias Input = (Substring, [BlockField], TopLevelDecl.EndOfLine)
         typealias Output = TopLevelDecl.Box
 
-        func apply(_ input: Input) throws -> Output { .init(name: String(input.0), fields: input.1) }
-        func unapply(_ output: Output) throws -> Input { (output.name[...], output.fields) }
+        func apply(_ input: Input) throws -> Output {
+            TopLevelDecl.Box(
+                name: String(input.0),
+                fields: input.1,
+                endOfLine: input.2
+            )
+        }
+
+        func unapply(_ output: Output) throws -> Input {
+            (output.name[...], output.fields, output.endOfLine)
+        }
     }
 }
 
 extension TopLevelDecl.Arrow {
     struct Conv: Conversion {
-        typealias Input = (Substring, Substring, [BlockField])
+        typealias Input = (Substring, Substring, [BlockField], TopLevelDecl.EndOfLine)
         typealias Output = TopLevelDecl.Arrow
 
         func apply(_ input: Input) throws -> Output {
-            .init(box1: String(input.0), box2: String(input.1), fields: input.2)
+            TopLevelDecl.Arrow(
+                box1: String(input.0),
+                box2: String(input.1),
+                fields: input.2,
+                endOfLine: input.3
+            )
         }
 
-        func unapply(_ output: Output) throws -> Input { (output.box1[...], output.box2[...], output.fields) }
+        func unapply(_ output: Output) throws -> Input {
+            (output.box1[...], output.box2[...], output.fields, output.endOfLine)
+        }
     }
 }
 
@@ -247,6 +286,26 @@ extension TopLevelDecl.LineComment {
     }
 }
 
+let lineComment = ParsePrint(TopLevelDecl.LineComment.Conv()) {
+    Whitespace(.horizontal)
+    "//".utf8
+    From(.substring) { Prefix(while: { !$0.isNewline }) }
+    Whitespace(1, .vertical)
+    Whitespace()
+}
+
+let emptyEndOfLine = ParsePrint {
+    Whitespace(.horizontal)
+    Whitespace(1, .vertical)
+    Whitespace()
+    "".utf8 // this can't be the only way to get the typing to work?
+}
+
+let endOfLine = OneOf {
+    emptyEndOfLine.map(.case(TopLevelDecl.EndOfLine.none))
+    lineComment.map(.case(TopLevelDecl.EndOfLine.lineComment))
+}
+
 let boxStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
     Whitespace(.horizontal)
     "box-style".utf8
@@ -254,7 +313,7 @@ let boxStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Whitespace(.horizontal)
     blockParser
-    Whitespace()
+    endOfLine
 }
 
 let styledBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
@@ -264,7 +323,7 @@ let styledBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Whitespace(.horizontal)
     blockParser
-    Whitespace()
+    endOfLine
 }
 
 let plainBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
@@ -273,7 +332,7 @@ let plainBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Always([BlockField]())
-    Whitespace()
+    endOfLine
 }
 
 let boxParser = OneOf {
@@ -290,7 +349,7 @@ let connectParser = ParsePrint(TopLevelDecl.Arrow.Conv()) {
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
     Whitespace(.horizontal)
     blockParser
-    Whitespace()
+    endOfLine
 }
 
 let constraintParser = ParsePrint {
@@ -301,29 +360,13 @@ let constraintParser = ParsePrint {
     Whitespace()
 }
 
-let lineComment = ParsePrint {
-    Whitespace(.horizontal)
-    "//".utf8
-    From(.substring) { Prefix(while: { !$0.isNewline }) }
-    Whitespace(1, .vertical)
-}
-
-let whitespaceOrLineComment = OneOf {
-    Whitespace()
-    lineComment.map { _ in }
-}
-
-let topLevelLineComment = ParsePrint(TopLevelDecl.LineComment.Conv()) {
-    lineComment
-}
-
 let topLevelParser = Many {
     OneOf {
         boxStyleParser.map(.case(TopLevelDecl.boxStyle))
         boxParser.map(.case(TopLevelDecl.box))
         connectParser.map(.case(TopLevelDecl.arrow))
         From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
-        topLevelLineComment.map(.case(TopLevelDecl.lineComment))
+        lineComment.map(.case(TopLevelDecl.lineComment))
     }
 }
 
