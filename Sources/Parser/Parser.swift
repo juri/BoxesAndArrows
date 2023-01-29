@@ -182,6 +182,7 @@ public enum TopLevelDecl: Equatable {
     case box(Box)
     case arrow(Arrow)
     case constraint([EquationPart])
+    case lineComment(LineComment)
 
     public struct BoxStyle: Equatable {
         public let name: String
@@ -197,6 +198,10 @@ public enum TopLevelDecl: Equatable {
         public let box1: String
         public let box2: String
         public let fields: [BlockField]
+    }
+
+    public struct LineComment: Equatable {
+        public let comment: String
     }
 }
 
@@ -230,6 +235,15 @@ extension TopLevelDecl.Arrow {
         }
 
         func unapply(_ output: Output) throws -> Input { (output.box1[...], output.box2[...], output.fields) }
+    }
+}
+
+extension TopLevelDecl.LineComment {
+    struct Conv: Conversion {
+        typealias Input = Substring
+        typealias Output = TopLevelDecl.LineComment
+        func apply(_ input: Input) throws -> Output { .init(comment: String(input)) }
+        func unapply(_ output: Output) throws -> Input { output.comment[...] }
     }
 }
 
@@ -282,12 +296,23 @@ let constraintParser = ParsePrint {
     Whitespace()
 }
 
+let lineComment = ParsePrint {
+    "//"
+    Prefix(while: { !$0.isNewline })
+    Whitespace(1, .vertical)
+}
+
+let topLevelLineComment = ParsePrint(TopLevelDecl.LineComment.Conv()) {
+    lineComment
+}
+
 let topLevelParser = Many {
     OneOf {
         boxStyleParser.map(.case(TopLevelDecl.boxStyle))
         boxParser.map(.case(TopLevelDecl.box))
         connectParser.map(.case(TopLevelDecl.arrow))
         From(.substring) { constraintParser.map(.case(TopLevelDecl.constraint)) }
+        From(.substring) { topLevelLineComment.map(.case(TopLevelDecl.lineComment)) }
     }
 }
 

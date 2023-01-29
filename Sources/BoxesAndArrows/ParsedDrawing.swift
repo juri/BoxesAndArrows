@@ -21,6 +21,8 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
             parsedArrows.append(connection)
         case let .constraint(equationPart):
             constraints.append(equationPart)
+        case .lineComment:
+            break
         }
     }
 

@@ -12,6 +12,7 @@ final class TopLevelTests: XCTestCase {
         box n2 { style: style1 }
         box n3
 
+        // this is a comment
         connect n1 n2 { head1: filledVee }
         constrain n1.left == n2.right + 30.0
         """
@@ -37,6 +38,7 @@ final class TopLevelTests: XCTestCase {
                     )
                 ),
                 .box(TopLevelDecl.Box(name: "n3", fields: [])),
+                .lineComment(TopLevelDecl.LineComment(comment: " this is a comment")),
                 .arrow(
                     TopLevelDecl.Arrow(
                         box1: "n1",
