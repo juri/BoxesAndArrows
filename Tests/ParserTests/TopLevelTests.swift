@@ -1,3 +1,4 @@
+import CustomDump
 import Draw
 @testable import Parser
 import XCTest
@@ -15,8 +16,7 @@ final class TopLevelTests: XCTestCase {
         constrain n1.left == n2.right + 30.0
         """
         let output = try topLevelParser.parse(input)
-        assertEqual(
-            output,
+        XCTAssertNoDifference(
             [
                 .boxStyle(
                     TopLevelDecl.BoxStyle(
@@ -53,7 +53,8 @@ final class TopLevelTests: XCTestCase {
                         .constant(30.0),
                     ]
                 ),
-            ]
+            ],
+            output
         )
     }
 }

@@ -16,6 +16,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/compnerd/cassowary.git", from: "0.0.1"),
+        .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.6.1"),
         .package(url: "https://github.com/pointfreeco/swift-parsing.git", from: "0.11.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
         .package(url: "https://github.com/pointfreeco/swift-tagged.git", from: "0.8.0"),
@@ -62,6 +63,7 @@ let package = Package(
         .testTarget(
             name: "ParserTests",
             dependencies: [
+                .customDump,
                 .parsing,
                 "Draw",
                 "Parser",
@@ -72,6 +74,7 @@ let package = Package(
 
 extension PackageDescription.Target.Dependency {
     static let cassowary: PackageDescription.Target.Dependency = .product(name: "cassowary", package: "cassowary")
+    static let customDump: PackageDescription.Target.Dependency = .product(name: "CustomDump", package: "swift-custom-dump")
     static let numerics: PackageDescription.Target.Dependency = .product(name: "Numerics", package: "swift-numerics")
     static let parsing: PackageDescription.Target.Dependency = .product(name: "Parsing", package: "swift-parsing")
     static let snapshot: PackageDescription.Target.Dependency = .product(name: "SnapshotTesting", package: "swift-snapshot-testing")

@@ -1,3 +1,4 @@
+import CustomDump
 @testable import Parser
 import XCTest
 
@@ -39,8 +40,7 @@ final class EquationTests: XCTestCase {
 
     func testEquation() throws {
         let parts = try EquationPart.manyParser.parse("1.2 + box1.left == box2.right - 40")
-        assertEqual(
-            parts,
+        XCTAssertNoDifference(
             [
                 .constant(1.2),
                 .operation(.add),
@@ -49,7 +49,8 @@ final class EquationTests: XCTestCase {
                 .variable(.init(head: "box2", tail: ["right"])),
                 .operation(.sub),
                 .constant(40.0),
-            ]
+            ],
+            parts
         )
     }
 }
