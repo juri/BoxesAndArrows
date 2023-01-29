@@ -248,6 +248,7 @@ extension TopLevelDecl.LineComment {
 }
 
 let boxStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
+    Whitespace(.horizontal)
     "box-style".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
@@ -257,6 +258,7 @@ let boxStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
 }
 
 let styledBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
+    Whitespace(.horizontal)
     "box".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
@@ -266,6 +268,7 @@ let styledBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
 }
 
 let plainBoxParser = ParsePrint(TopLevelDecl.Box.Conv()) {
+    Whitespace(.horizontal)
     "box".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
@@ -279,6 +282,7 @@ let boxParser = OneOf {
 }
 
 let connectParser = ParsePrint(TopLevelDecl.Arrow.Conv()) {
+    Whitespace(.horizontal)
     "connect".utf8
     Whitespace(.horizontal)
     From(.substring) { Prefix(while: { !$0.isWhitespace }) }
@@ -290,6 +294,7 @@ let connectParser = ParsePrint(TopLevelDecl.Arrow.Conv()) {
 }
 
 let constraintParser = ParsePrint {
+    Whitespace(.horizontal)
     "constrain"
     Whitespace(.horizontal)
     EquationPart.manyParser
@@ -297,9 +302,15 @@ let constraintParser = ParsePrint {
 }
 
 let lineComment = ParsePrint {
+    Whitespace(.horizontal)
     "//"
     Prefix(while: { !$0.isNewline })
     Whitespace(1, .vertical)
+}
+
+let whitespaceOrLineComment = OneOf {
+    Whitespace()
+    lineComment.map { _ in }
 }
 
 let topLevelLineComment = ParsePrint(TopLevelDecl.LineComment.Conv()) {
