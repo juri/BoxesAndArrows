@@ -181,7 +181,7 @@ public enum TopLevelDecl: Equatable {
     case boxStyle(BoxStyle)
     case box(Box)
     case arrow(Arrow)
-    case constraint([EquationPart])
+    case constraint(Equation)
     case lineComment(LineComment)
 
     public struct LineComment: Equatable {
@@ -304,6 +304,7 @@ let emptyEndOfLine = ParsePrint {
 let endOfLine = OneOf {
     emptyEndOfLine.map(.case(TopLevelDecl.EndOfLine.none))
     lineComment.map(.case(TopLevelDecl.EndOfLine.lineComment))
+    End().map(.case(TopLevelDecl.EndOfLine.none))
 }
 
 let boxStyleParser = ParsePrint(TopLevelDecl.BoxStyle.Conv()) {
@@ -356,8 +357,13 @@ let constraintParser = ParsePrint {
     Whitespace(.horizontal)
     "constrain"
     Whitespace(.horizontal)
-    EquationPart.manyParser
-    Whitespace()
+    Equation.parser
+    From(.utf8) {
+        OneOf {
+            emptyEndOfLine
+            End()
+        }
+    }
 }
 
 let topLevelParser = Many {

@@ -39,7 +39,7 @@ final class EquationTests: XCTestCase {
     }
 
     func testEquation() throws {
-        let parts = try EquationPart.manyParser.parse("1.2 + box1.left == box2.right - 40")
+        let parts = try EquationPart.manyParser.parse("1.2 + box1.left == box2.right - 40 // comment")
         XCTAssertNoDifference(
             [
                 .constant(1.2),
@@ -49,6 +49,7 @@ final class EquationTests: XCTestCase {
                 .variable(.init(head: "box2", tail: ["right"])),
                 .operation(.sub),
                 .constant(40.0),
+                .lineComment(.init(text: " comment")),
             ],
             parts
         )

@@ -14,7 +14,7 @@ final class TopLevelTests: XCTestCase {
 
         // this is a comment
         connect n1 n2 { head1: filledVee }
-        constrain n1.left == n2.right + 30.0
+        constrain n1.left == n2.right + 30.0        
         """
         let output = try topLevelParser.parse(input)
         XCTAssertNoDifference(
@@ -53,13 +53,17 @@ final class TopLevelTests: XCTestCase {
                     )
                 ),
                 .constraint(
-                    [
-                        .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
-                        .relation(Parser.EquationPart.Relation.eq),
-                        .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
-                        .operation(Parser.EquationPart.Operation.add),
-                        .constant(30.0),
-                    ]
+                    Equation(
+                        relation: .eq,
+                        left: [
+                            .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
+                        ],
+                        right: [
+                            .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
+                            .operation(Parser.EquationPart.Operation.add),
+                            .constant(30.0),
+                        ]
+                    )
                 ),
             ],
             output
@@ -115,13 +119,17 @@ final class TopLevelTests: XCTestCase {
                     )
                 ),
                 .constraint(
-                    [
-                        .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
-                        .relation(Parser.EquationPart.Relation.eq),
-                        .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
-                        .operation(Parser.EquationPart.Operation.add),
-                        .constant(30.0),
-                    ]
+                    Equation(
+                        relation: .eq,
+                        left: [
+                            .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
+                        ],
+                        right: [
+                            .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
+                            .operation(Parser.EquationPart.Operation.add),
+                            .constant(30.0),
+                        ]
+                    )
                 ),
             ],
             output
@@ -138,7 +146,7 @@ final class TopLevelTests: XCTestCase {
 
         // this is a comment
         connect n1 n2 { head1: filledVee } // trailing comment 5
-        constrain n1.left == n2.right + 30.0
+        constrain n1.left == n2.right + 30.0 // trailing comment 6
         """
         let output = try topLevelParser.parse(input)
         XCTAssertNoDifference(
@@ -183,13 +191,20 @@ final class TopLevelTests: XCTestCase {
                     )
                 ),
                 .constraint(
-                    [
-                        .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
-                        .relation(Parser.EquationPart.Relation.eq),
-                        .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
-                        .operation(Parser.EquationPart.Operation.add),
-                        .constant(30.0),
-                    ]
+                    Equation(
+                        relation: .eq,
+                        left: [
+                            .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
+                        ],
+                        right: [
+                            .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
+                            .operation(Parser.EquationPart.Operation.add),
+                            .constant(30.0),
+                        ],
+                        lineComment: Parser.EquationPart.LineComment(
+                            text: " trailing comment 6"
+                        )
+                    )
                 ),
             ],
             output

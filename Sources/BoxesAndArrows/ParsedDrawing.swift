@@ -8,7 +8,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
     var boxStyles = [BoxStyle.ID: BoxStyle]()
     var parsedBoxes = [String: TopLevelDecl.Box]()
     var parsedArrows = [TopLevelDecl.Arrow]()
-    var constraints = [[EquationPart]]()
+    var constraints = [Equation]()
 
     for decl in decls {
         switch decl {
@@ -75,7 +75,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
 
     let solver = try graph.makeSolver(graphics: graphics)
     for constraint in constraints {
-        let (relation, lhs, rhs) = try splitSides(constraint)
+        let (relation, lhs, rhs) = (constraint.relation, constraint.left, constraint.right) // try splitSides(constraint)
         let lhse = try expression(from: lhs, findVariable: variable(_:))
         let rhse = try expression(from: rhs, findVariable: variable(_:))
 
@@ -88,7 +88,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
         case .gte:
             cconstraint = lhse >= rhse
         case .gt, .lt:
-            throw EquationFormatError(parts: constraint)
+            throw EquationFormatError(equation: constraint)
         }
         try solver.add(constraint: cconstraint)
     }
@@ -97,44 +97,8 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
     return draw(graph: graph, graphics: graphics)
 }
 
-private func splitSides(
-    _ parts: [EquationPart]
-) throws -> (EquationPart.Relation, [EquationSidePart], [EquationSidePart]) {
-    var relation: EquationPart.Relation? = nil
-    var lhs: [EquationSidePart] = []
-    var rhs: [EquationSidePart] = []
-    func append(_ sidePart: EquationSidePart) {
-        if relation == nil {
-            lhs.append(sidePart)
-        } else {
-            rhs.append(sidePart)
-        }
-    }
-
-    for part in parts {
-        switch part {
-        case let .relation(r):
-            guard relation == nil else {
-                throw EquationFormatError(parts: parts)
-            }
-            relation = r
-        case let .constant(c):
-            append(.constant(c))
-        case let .operation(o):
-            append(.operation(o))
-        case let .variable(v):
-            append(.variable(v))
-        }
-    }
-
-    guard let relation else {
-        throw EquationFormatError(parts: parts)
-    }
-    return (relation, lhs, rhs)
-}
-
 private func expression(
-    from sideParts: [EquationSidePart],
+    from sideParts: [Equation.Part],
     findVariable: (EquationPart.Variable) throws -> Cassowary.Variable
 ) throws -> Cassowary.Expression {
     enum State {
@@ -237,21 +201,6 @@ private extension EquationPart.Operation {
     }
 }
 
-enum EquationSidePart {
-    case variable(EquationPart.Variable)
-    case operation(EquationPart.Operation)
-    case constant(Double)
-
-    init(_ part: EquationPart) {
-        switch part {
-        case let .constant(c): self = .constant(c)
-        case let .operation(o): self = .operation(o)
-        case let .variable(v): self = .variable(v)
-        case .relation: fatalError()
-        }
-    }
-}
-
 private func boxStyle(from style: TopLevelDecl.BoxStyle) throws -> BoxStyle {
     var boxStyle = BoxStyle(id: .init(style.name))
     for field in style.fields {
@@ -281,11 +230,11 @@ struct UndefinedReferenceError: Error {
 }
 
 struct EquationFormatError: Error {
-    var parts: [EquationPart]
+    var equation: Equation
 }
 
 struct EquationSideFormatError: Error {
-    var parts: [EquationSidePart]
+    var parts: [Equation.Part]
 }
 
 private func box(
