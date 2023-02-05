@@ -54,6 +54,9 @@ let package = Package(
             dependencies: [
                 .snapshot,
                 "BoxesAndArrows",
+            ],
+            exclude: [
+                "__Snapshots__",
             ]
         ),
         .testTarget(
