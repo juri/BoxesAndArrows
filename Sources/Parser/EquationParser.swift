@@ -1,133 +1,8 @@
 import Parsing
 
-enum EquationPart: Equatable {
-    case variable(Equation.Variable)
-    case operation(Equation.Operation)
-    case relation(Equation.Relation)
-    case constant(Double)
-    case lineComment(Equation.LineComment)
-}
+// MARK: Equation
 
-extension Equation.Variable {
-    struct Conv: Conversion {
-        typealias Input = [Substring]
-        typealias Output = Equation.Variable
-
-        func apply(_ input: Input) throws -> Equation.Variable {
-            .init(head: String(input[0]), tail: input.dropFirst().map(String.init))
-        }
-
-        func unapply(_ output: Output) throws -> Input {
-            [output.head[...]] + output.tail.map { $0[...] }
-        }
-    }
-
-    struct CaseConv: Conversion {
-        typealias Input = Equation.Variable
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .variable(input)
-        }
-
-        func unapply(_ output: EquationPart) throws -> Equation.Variable {
-            switch output {
-            case let .variable(v): return v
-            default: throw ParsingError()
-            }
-        }
-    }
-
-    static let parser = Many {
-        Prefix { !$0.isWhitespace && $0 != "." }
-            .filter { !$0.isEmpty }
-    } separator: {
-        "."
-    }
-    .filter { !$0.isEmpty }
-    .map(Conv())
-}
-
-extension Equation.LineComment {
-    static let parser = Parse {
-        "//"
-        Prefix(while: { !$0.isNewline })
-        OneOf {
-            Whitespace(1, .vertical)
-            End()
-        }
-    }
-
-    struct Conv: Conversion {
-        typealias Input = Substring
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .lineComment(Equation.LineComment(text: String(input)))
-        }
-
-        func unapply(_ output: Output) throws -> Input {
-            switch output {
-            case let .lineComment(l): return l.text[...]
-            default: throw ParsingError()
-            }
-        }
-    }
-}
-
-extension EquationPart {
-    static let parser = ParsePrint {
-        OneOf {
-            Equation.LineComment.parser.map(Equation.LineComment.Conv())
-            Double.parser(of: Substring.self).map(.case(EquationPart.constant))
-            Equation.Operation.parser().map(Equation.Operation.Conv())
-            Equation.Relation.parser().map(Equation.Relation.Conv())
-            Equation.Variable.parser.map(Equation.Variable.CaseConv())
-        }
-        Whitespace(.horizontal)
-    }
-
-    static let manyParser = Many {
-        parser
-    }
-}
-
-extension Equation.Operation {
-    struct Conv: Conversion {
-        typealias Input = Equation.Operation
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .operation(input)
-        }
-
-        func unapply(_ output: EquationPart) throws -> Input {
-            switch output {
-            case let .operation(op): return op
-            default: throw ParsingError()
-            }
-        }
-    }
-}
-
-extension Equation.Relation {
-    struct Conv: Conversion {
-        typealias Input = Equation.Relation
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .relation(input)
-        }
-
-        func unapply(_ output: EquationPart) throws -> Input {
-            switch output {
-            case let .relation(r): return r
-            default: throw ParsingError()
-            }
-        }
-    }
-}
-
+/// `Equation` is the output of the equation parser. Some sanity checking has been done on it, and its split to sides.
 public struct Equation: Equatable {
     public var relation: Relation
     public var left: [Equation.Part]
@@ -165,16 +40,172 @@ extension Equation {
     public struct LineComment: Hashable {
         public let text: String
     }
+}
 
+extension Equation.Part {
+    func canBeFollowed(by part: Equation.Part) -> Bool {
+        switch (self, part) {
+        case (.variable, .operation),
+             (.constant, .operation),
+             (.operation, .variable),
+             (.operation, .constant):
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+extension Equation.Variable {
     struct Conv: Conversion {
-        typealias Input = [EquationPart]
+        typealias Input = [Substring]
+        typealias Output = Equation.Variable
+
+        func apply(_ input: Input) throws -> Equation.Variable {
+            .init(head: String(input[0]), tail: input.dropFirst().map(String.init))
+        }
+
+        func unapply(_ output: Output) throws -> Input {
+            [output.head[...]] + output.tail.map { $0[...] }
+        }
+    }
+
+    /// A parser for a multipart string, parts separated by `.`.
+    static let parser = Many {
+        Prefix { !$0.isWhitespace && $0 != "." }
+            .filter { !$0.isEmpty }
+    } separator: {
+        "."
+    }
+    .filter { !$0.isEmpty }
+    .map(Conv())
+}
+
+extension Equation.LineComment {
+    /// A parser for a line comment: starts with a `//`, terminates with end of line or end of input.
+    static let parser = Parse {
+        "//"
+        Prefix(while: { !$0.isNewline })
+        OneOf {
+            Whitespace(1, .vertical)
+            End()
+        }
+    }
+}
+
+// MARK: - EquationPartRaw
+
+/// `EquationPartRaw` is a raw part of the equation. These will go through sanity checks when converted to `Equation.Part` and
+/// split into `Equation`.
+enum EquationPartRaw: Equatable {
+    case variable(Equation.Variable)
+    case operation(Equation.Operation)
+    case relation(Equation.Relation)
+    case constant(Double)
+    case lineComment(Equation.LineComment)
+}
+
+extension EquationPartRaw {
+    /// A parser for one raw equation part followed by whitespace.
+    static let parser = ParsePrint {
+        OneOf {
+            Equation.LineComment.parser.map(Equation.LineComment.Conv())
+            Double.parser(of: Substring.self).map(.case(EquationPartRaw.constant))
+            Equation.Operation.parser().map(Equation.Operation.Conv())
+            Equation.Relation.parser().map(Equation.Relation.Conv())
+            Equation.Variable.parser.map(Equation.Variable.CaseConv())
+        }
+        Whitespace(.horizontal)
+    }
+
+    /// A parser for many equation parts raw.
+    static let manyParser = Many {
+        parser
+    }
+}
+
+extension Equation.Operation {
+    struct Conv: Conversion {
+        typealias Input = Equation.Operation
+        typealias Output = EquationPartRaw
+
+        func apply(_ input: Input) throws -> Output {
+            .operation(input)
+        }
+
+        func unapply(_ output: EquationPartRaw) throws -> Input {
+            switch output {
+            case let .operation(op): return op
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+extension Equation.Relation {
+    struct Conv: Conversion {
+        typealias Input = Equation.Relation
+        typealias Output = EquationPartRaw
+
+        func apply(_ input: Input) throws -> Output {
+            .relation(input)
+        }
+
+        func unapply(_ output: EquationPartRaw) throws -> Input {
+            switch output {
+            case let .relation(r): return r
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+extension Equation.Variable {
+    struct CaseConv: Conversion {
+        typealias Input = Equation.Variable
+        typealias Output = EquationPartRaw
+
+        func apply(_ input: Input) throws -> Output {
+            .variable(input)
+        }
+
+        func unapply(_ output: EquationPartRaw) throws -> Equation.Variable {
+            switch output {
+            case let .variable(v): return v
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+extension Equation.LineComment {
+    struct Conv: Conversion {
+        typealias Input = Substring
+        typealias Output = EquationPartRaw
+
+        func apply(_ input: Input) throws -> Output {
+            .lineComment(Equation.LineComment(text: String(input)))
+        }
+
+        func unapply(_ output: Output) throws -> Input {
+            switch output {
+            case let .lineComment(l): return l.text[...]
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+extension Equation {
+    struct Conv: Conversion {
+        typealias Input = [EquationPartRaw]
         typealias Output = Equation
 
-        func apply(_ input: [EquationPart]) throws -> Equation {
+        func apply(_ input: [EquationPartRaw]) throws -> Equation {
             try Equation(rawParts: input)
         }
 
-        func unapply(_ output: Equation) throws -> [EquationPart] {
+        func unapply(_ output: Equation) throws -> [EquationPartRaw] {
             let leftParts = output.left.map(\.raw)
             let rightParts = output.right.map(\.raw)
             var parts = leftParts + [.relation(output.relation)] + rightParts
@@ -185,10 +216,10 @@ extension Equation {
         }
     }
 
-    static let parser = EquationPart.manyParser
+    static let parser = EquationPartRaw.manyParser
         .map(Conv())
 
-    init(rawParts: [EquationPart]) throws {
+    init(rawParts: [EquationPartRaw]) throws {
         var relation: Relation? = nil
         var left = [Equation.Part]()
         var right = [Equation.Part]()
@@ -248,7 +279,7 @@ extension Equation {
 }
 
 extension Equation.Part {
-    init(rawPart: EquationPart) throws {
+    init(rawPart: EquationPartRaw) throws {
         switch rawPart {
         case let .variable(variable):
             self = .variable(variable)
@@ -263,19 +294,7 @@ extension Equation.Part {
         }
     }
 
-    func canBeFollowed(by part: Equation.Part) -> Bool {
-        switch (self, part) {
-        case (.variable, .operation),
-             (.constant, .operation),
-             (.operation, .variable),
-             (.operation, .constant):
-            return true
-        default:
-            return false
-        }
-    }
-
-    var raw: EquationPart {
+    var raw: EquationPartRaw {
         switch self {
         case let .operation(o): return .operation(o)
         case let .variable(v): return .variable(v)
