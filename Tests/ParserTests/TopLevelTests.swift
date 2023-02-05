@@ -56,11 +56,11 @@ final class TopLevelTests: XCTestCase {
                     Equation(
                         relation: .eq,
                         left: [
-                            .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
+                            .variable(Parser.Equation.Variable(head: "n1", tail: ["left"])),
                         ],
                         right: [
-                            .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
-                            .operation(Parser.EquationPart.Operation.add),
+                            .variable(Parser.Equation.Variable(head: "n2", tail: ["right"])),
+                            .operation(Parser.Equation.Operation.add),
                             .constant(30.0),
                         ]
                     )
@@ -122,11 +122,11 @@ final class TopLevelTests: XCTestCase {
                     Equation(
                         relation: .eq,
                         left: [
-                            .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
+                            .variable(Parser.Equation.Variable(head: "n1", tail: ["left"])),
                         ],
                         right: [
-                            .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
-                            .operation(Parser.EquationPart.Operation.add),
+                            .variable(Parser.Equation.Variable(head: "n2", tail: ["right"])),
+                            .operation(Parser.Equation.Operation.add),
                             .constant(30.0),
                         ]
                     )
@@ -194,14 +194,14 @@ final class TopLevelTests: XCTestCase {
                     Equation(
                         relation: .eq,
                         left: [
-                            .variable(Parser.EquationPart.Variable(head: "n1", tail: ["left"])),
+                            .variable(Parser.Equation.Variable(head: "n1", tail: ["left"])),
                         ],
                         right: [
-                            .variable(Parser.EquationPart.Variable(head: "n2", tail: ["right"])),
-                            .operation(Parser.EquationPart.Operation.add),
+                            .variable(Parser.Equation.Variable(head: "n2", tail: ["right"])),
+                            .operation(Parser.Equation.Operation.add),
                             .constant(30.0),
                         ],
-                        lineComment: Parser.EquationPart.LineComment(
+                        lineComment: Parser.Equation.LineComment(
                             text: " trailing comment 6"
                         )
                     )

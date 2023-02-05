@@ -4,37 +4,37 @@ import XCTest
 
 final class EquationTests: XCTestCase {
     func testEmptyVariable() throws {
-        XCTAssertThrowsError(try EquationPart.Variable.parser.parse(""))
+        XCTAssertThrowsError(try Equation.Variable.parser.parse(""))
     }
 
     func testSpaceVariable() throws {
-        XCTAssertThrowsError(try EquationPart.Variable.parser.parse(" "))
+        XCTAssertThrowsError(try Equation.Variable.parser.parse(" "))
     }
 
     func testPeriodVariable() throws {
-        XCTAssertThrowsError(try EquationPart.Variable.parser.parse("."))
+        XCTAssertThrowsError(try Equation.Variable.parser.parse("."))
     }
 
     func testLeadingPeriod() throws {
-        XCTAssertThrowsError(try EquationPart.Variable.parser.parse(".b.c"))
+        XCTAssertThrowsError(try Equation.Variable.parser.parse(".b.c"))
     }
 
     func testTrailingPeriod() throws {
-        XCTAssertThrowsError(try EquationPart.Variable.parser.parse("a.b.c."))
+        XCTAssertThrowsError(try Equation.Variable.parser.parse("a.b.c."))
     }
 
     func testSinglePartVariable() throws {
-        let variable = try EquationPart.Variable.parser.parse("a")
+        let variable = try Equation.Variable.parser.parse("a")
         XCTAssertEqual(variable, .init(head: "a", tail: []))
     }
 
     func testTwoPartVariable() throws {
-        let variable = try EquationPart.Variable.parser.parse("a.b")
+        let variable = try Equation.Variable.parser.parse("a.b")
         XCTAssertEqual(variable, .init(head: "a", tail: ["b"]))
     }
 
     func testThreePartVariable() throws {
-        let variable = try EquationPart.Variable.parser.parse("a.b.c")
+        let variable = try Equation.Variable.parser.parse("a.b.c")
         XCTAssertEqual(variable, .init(head: "a", tail: ["b", "c"]))
     }
 

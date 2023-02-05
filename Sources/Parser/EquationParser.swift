@@ -1,11 +1,146 @@
 import Parsing
 
-public enum EquationPart: Equatable {
-    case variable(Variable)
-    case operation(Operation)
-    case relation(Relation)
+enum EquationPart: Equatable {
+    case variable(Equation.Variable)
+    case operation(Equation.Operation)
+    case relation(Equation.Relation)
     case constant(Double)
-    case lineComment(LineComment)
+    case lineComment(Equation.LineComment)
+}
+
+extension Equation.Variable {
+    struct Conv: Conversion {
+        typealias Input = [Substring]
+        typealias Output = Equation.Variable
+
+        func apply(_ input: Input) throws -> Equation.Variable {
+            .init(head: String(input[0]), tail: input.dropFirst().map(String.init))
+        }
+
+        func unapply(_ output: Output) throws -> Input {
+            [output.head[...]] + output.tail.map { $0[...] }
+        }
+    }
+
+    struct CaseConv: Conversion {
+        typealias Input = Equation.Variable
+        typealias Output = EquationPart
+
+        func apply(_ input: Input) throws -> Output {
+            .variable(input)
+        }
+
+        func unapply(_ output: EquationPart) throws -> Equation.Variable {
+            switch output {
+            case let .variable(v): return v
+            default: throw ParsingError()
+            }
+        }
+    }
+
+    static let parser = Many {
+        Prefix { !$0.isWhitespace && $0 != "." }
+            .filter { !$0.isEmpty }
+    } separator: {
+        "."
+    }
+    .filter { !$0.isEmpty }
+    .map(Conv())
+}
+
+extension Equation.LineComment {
+    static let parser = Parse {
+        "//"
+        Prefix(while: { !$0.isNewline })
+        OneOf {
+            Whitespace(1, .vertical)
+            End()
+        }
+    }
+
+    struct Conv: Conversion {
+        typealias Input = Substring
+        typealias Output = EquationPart
+
+        func apply(_ input: Input) throws -> Output {
+            .lineComment(Equation.LineComment(text: String(input)))
+        }
+
+        func unapply(_ output: Output) throws -> Input {
+            switch output {
+            case let .lineComment(l): return l.text[...]
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+extension EquationPart {
+    static let parser = ParsePrint {
+        OneOf {
+            Equation.LineComment.parser.map(Equation.LineComment.Conv())
+            Double.parser(of: Substring.self).map(.case(EquationPart.constant))
+            Equation.Operation.parser().map(Equation.Operation.Conv())
+            Equation.Relation.parser().map(Equation.Relation.Conv())
+            Equation.Variable.parser.map(Equation.Variable.CaseConv())
+        }
+        Whitespace(.horizontal)
+    }
+
+    static let manyParser = Many {
+        parser
+    }
+}
+
+extension Equation.Operation {
+    struct Conv: Conversion {
+        typealias Input = Equation.Operation
+        typealias Output = EquationPart
+
+        func apply(_ input: Input) throws -> Output {
+            .operation(input)
+        }
+
+        func unapply(_ output: EquationPart) throws -> Input {
+            switch output {
+            case let .operation(op): return op
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+extension Equation.Relation {
+    struct Conv: Conversion {
+        typealias Input = Equation.Relation
+        typealias Output = EquationPart
+
+        func apply(_ input: Input) throws -> Output {
+            .relation(input)
+        }
+
+        func unapply(_ output: EquationPart) throws -> Input {
+            switch output {
+            case let .relation(r): return r
+            default: throw ParsingError()
+            }
+        }
+    }
+}
+
+public struct Equation: Equatable {
+    public var relation: Relation
+    public var left: [Equation.Part]
+    public var right: [Equation.Part]
+    public var lineComment: LineComment?
+}
+
+extension Equation {
+    public enum Part: Equatable {
+        case variable(Variable)
+        case operation(Operation)
+        case constant(Double)
+    }
 
     public struct Variable: Hashable {
         public let head: String
@@ -30,142 +165,7 @@ public enum EquationPart: Equatable {
     public struct LineComment: Hashable {
         public let text: String
     }
-}
 
-extension EquationPart.Variable {
-    struct Conv: Conversion {
-        typealias Input = [Substring]
-        typealias Output = EquationPart.Variable
-
-        func apply(_ input: Input) throws -> EquationPart.Variable {
-            .init(head: String(input[0]), tail: input.dropFirst().map(String.init))
-        }
-
-        func unapply(_ output: Output) throws -> Input {
-            [output.head[...]] + output.tail.map { $0[...] }
-        }
-    }
-
-    struct CaseConv: Conversion {
-        typealias Input = EquationPart.Variable
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .variable(input)
-        }
-
-        func unapply(_ output: EquationPart) throws -> EquationPart.Variable {
-            switch output {
-            case let .variable(v): return v
-            default: throw ParsingError()
-            }
-        }
-    }
-
-    static let parser = Many {
-        Prefix { !$0.isWhitespace && $0 != "." }
-            .filter { !$0.isEmpty }
-    } separator: {
-        "."
-    }
-    .filter { !$0.isEmpty }
-    .map(Conv())
-}
-
-extension EquationPart.LineComment {
-    static let parser = Parse {
-        "//"
-        Prefix(while: { !$0.isNewline })
-        OneOf {
-            Whitespace(1, .vertical)
-            End()
-        }
-    }
-
-    struct Conv: Conversion {
-        typealias Input = Substring
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .lineComment(EquationPart.LineComment(text: String(input)))
-        }
-
-        func unapply(_ output: Output) throws -> Input {
-            switch output {
-            case let .lineComment(l): return l.text[...]
-            default: throw ParsingError()
-            }
-        }
-    }
-}
-
-extension EquationPart {
-    static let parser = ParsePrint {
-        OneOf {
-            LineComment.parser.map(EquationPart.LineComment.Conv())
-            Double.parser(of: Substring.self).map(.case(EquationPart.constant))
-            Operation.parser().map(EquationPart.Operation.Conv())
-            Relation.parser().map(EquationPart.Relation.Conv())
-            EquationPart.Variable.parser.map(EquationPart.Variable.CaseConv())
-        }
-        Whitespace(.horizontal)
-    }
-
-    static let manyParser = Many {
-        parser
-    }
-}
-
-extension EquationPart.Operation {
-    struct Conv: Conversion {
-        typealias Input = EquationPart.Operation
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .operation(input)
-        }
-
-        func unapply(_ output: EquationPart) throws -> Input {
-            switch output {
-            case let .operation(op): return op
-            default: throw ParsingError()
-            }
-        }
-    }
-}
-
-extension EquationPart.Relation {
-    struct Conv: Conversion {
-        typealias Input = EquationPart.Relation
-        typealias Output = EquationPart
-
-        func apply(_ input: Input) throws -> Output {
-            .relation(input)
-        }
-
-        func unapply(_ output: EquationPart) throws -> Input {
-            switch output {
-            case let .relation(r): return r
-            default: throw ParsingError()
-            }
-        }
-    }
-}
-
-public struct Equation: Equatable {
-    public enum Part: Equatable {
-        case variable(EquationPart.Variable)
-        case operation(EquationPart.Operation)
-        case constant(Double)
-    }
-
-    public var relation: EquationPart.Relation
-    public var left: [Equation.Part]
-    public var right: [Equation.Part]
-    public var lineComment: EquationPart.LineComment?
-}
-
-extension Equation {
     struct Conv: Conversion {
         typealias Input = [EquationPart]
         typealias Output = Equation
@@ -189,10 +189,10 @@ extension Equation {
         .map(Conv())
 
     init(rawParts: [EquationPart]) throws {
-        var relation: EquationPart.Relation? = nil
+        var relation: Relation? = nil
         var left = [Equation.Part]()
         var right = [Equation.Part]()
-        var lineComment: EquationPart.LineComment? = nil
+        var lineComment: LineComment? = nil
 
         func append(part: Equation.Part, to parts: inout [Equation.Part]) throws {
             if let prev = parts.last, !prev.canBeFollowed(by: part) {

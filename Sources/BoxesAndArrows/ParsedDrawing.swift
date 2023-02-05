@@ -52,7 +52,7 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
         graph.connect(box1, to: box2, connectionProperties: properties)
     }
 
-    func variable(_ name: EquationPart.Variable) throws -> Variable {
+    func variable(_ name: Equation.Variable) throws -> Variable {
         guard let box = boxes[.init(name.head)] else {
             throw UndefinedReferenceError(name: name.head)
         }
@@ -99,16 +99,16 @@ public func drawSpec<T>(_ spec: String, graphics: any Graphics<T>) throws -> T {
 
 private func expression(
     from sideParts: [Equation.Part],
-    findVariable: (EquationPart.Variable) throws -> Cassowary.Variable
+    findVariable: (Equation.Variable) throws -> Cassowary.Variable
 ) throws -> Cassowary.Expression {
     enum State {
         case initial
         case const(Double)
-        case constOp(Double, EquationPart.Operation)
+        case constOp(Double, Equation.Operation)
         case term(Cassowary.Term)
-        case termOp(Cassowary.Term, EquationPart.Operation)
+        case termOp(Cassowary.Term, Equation.Operation)
         case expr(Cassowary.Expression)
-        case exprOp(Cassowary.Expression, EquationPart.Operation)
+        case exprOp(Cassowary.Expression, Equation.Operation)
     }
     var state = State.initial
     for sidePart in sideParts {
@@ -190,7 +190,7 @@ private func expression(
     }
 }
 
-private extension EquationPart.Operation {
+private extension Equation.Operation {
     func apply(double1: Double, double2: Double) -> Double {
         switch self {
         case .add: return double1 + double2
