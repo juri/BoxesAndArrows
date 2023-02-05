@@ -30,20 +30,6 @@ public enum EquationPart: Equatable {
     public struct LineComment: Hashable {
         public let text: String
     }
-
-    public var isRelation: Bool {
-        guard case .relation = self else {
-            return false
-        }
-        return true
-    }
-
-    public var relation: Relation? {
-        guard case let .relation(r) = self else {
-            return nil
-        }
-        return r
-    }
 }
 
 extension EquationPart.Variable {
