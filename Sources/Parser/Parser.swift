@@ -22,6 +22,7 @@ public enum BlockField: Equatable {
     case numeric(NumericField)
     case string(StringField)
     case variable(VariableField)
+    case lineComment(LineComment)
 
     struct ColorConversion: Conversion {
         func apply(_ input: (ColorFieldID, Color)) throws -> BlockField {
@@ -68,6 +69,23 @@ public enum BlockField: Equatable {
         }
     }
 
+    struct LineCommentConversion: Conversion {
+        typealias Input = LineComment
+        typealias Output = BlockField
+
+        func apply(_ input: Input) throws -> Output {
+            .lineComment(input)
+        }
+
+        func unapply(_ output: Output) throws -> Input {
+            struct InvalidBlock: Error {}
+            guard case let .lineComment(l) = output else {
+                throw InvalidBlock()
+            }
+            return l
+        }
+    }
+
     public struct ColorField: Equatable {
         public let fieldID: ColorFieldID
         public let value: Color
@@ -87,6 +105,10 @@ public enum BlockField: Equatable {
         public let fieldID: NumericFieldID
         public let value: Double
     }
+
+    public struct LineComment: Equatable {
+        public let text: String
+    }
 }
 
 extension BlockField.VariableField {
@@ -96,6 +118,29 @@ extension BlockField.VariableField {
 
         func apply(_ input: Input) throws -> Output { Output(fieldID: input.0, value: String(input.1)) }
         func unapply(_ output: Output) throws -> Input { (output.fieldID, output.value[...]) }
+    }
+}
+
+extension BlockField.LineComment {
+    struct Conv: Conversion {
+        typealias Input = Substring
+        typealias Output = BlockField
+
+        func apply(_ input: Input) throws -> Output { .lineComment(BlockField.LineComment(text: String(input))) }
+        func unapply(_ output: Output) throws -> Input {
+            guard case let .lineComment(l) = output else {
+                throw ParsingError()
+            }
+            return l.text[...]
+        }
+    }
+
+    static let parse = ParsePrint {
+        Whitespace(.horizontal)
+        "//".utf8
+        From(.substring) { Prefix(while: { !$0.isNewline }) }
+        Whitespace(1, .vertical)
+        Whitespace()
     }
 }
 
@@ -124,6 +169,7 @@ let variableParse = ParsePrint(BlockField.VariableField.Conv()) {
 }
 
 let blockFieldParser = OneOf {
+    BlockField.LineComment.parse.map(BlockField.LineComment.Conv())
     colorParse.map(BlockField.ColorConversion())
     numberParse.map(BlockField.NumericFieldConversion())
     From(.substring) { stringParse.map(BlockField.StringFieldConversion()) }

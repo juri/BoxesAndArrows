@@ -216,6 +216,8 @@ private func boxStyle(from style: TopLevelDecl.BoxStyle) throws -> BoxStyle {
             throw UnsupportedFieldTypeError(field: stringField.fieldID.rawValue)
         case let .variable(variableField):
             throw UnsupportedFieldTypeError(field: variableField.fieldID.rawValue)
+        case .lineComment:
+            break
         }
     }
     return boxStyle
@@ -274,6 +276,9 @@ private func box(
             case .head1, .head2:
                 throw UnsupportedFieldTypeError(field: variableField.fieldID.rawValue)
             }
+
+        case .lineComment:
+            break
         }
     }
 
@@ -330,6 +335,9 @@ private func connectionProperties(
             case .head2:
                 properties.targetHead = try arrowHead(with: variableField.value)
             }
+
+        case .lineComment:
+            break
         }
     }
 
