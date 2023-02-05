@@ -1,25 +1,6 @@
 import Draw
 import Parsing
 
-/*
- box-style style1 {
-     background-color: #aabbcc; text-color: #00000011
- }
-
- // comment
-
- box box1 {
-     label: "Hello"
-     style: style1
- }
- box box2 { style: style2 }
-
- connect box1 box2 { head1: line; head2: filled-vee }
-
- constrain box1.top == box2.top
- constrain box2.left == box2.right + 100.0
-  */
-
 struct ParsingError: Error {}
 
 public enum NumericFieldID: String, CaseIterable {
