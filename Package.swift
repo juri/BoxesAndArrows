@@ -6,12 +6,17 @@ let package = Package(
     name: "BoxesAndArrows",
     platforms: [.macOS(.v13)],
     products: [
+        .executable(
+            name: "boxarr",
+            targets: ["boxarr"]
+        ),
         .library(
             name: "BoxesAndArrows",
             targets: ["BoxesAndArrows"]
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/compnerd/cassowary.git", from: "0.0.1"),
         .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.6.1"),
@@ -20,6 +25,13 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-tagged.git", from: "0.8.0"),
     ],
     targets: [
+        .executableTarget(
+            name: "boxarr",
+            dependencies: [
+                .argumentParser,
+                "BoxesAndArrows",
+            ]
+        ),
         .target(
             name: "BoxesAndArrows",
             dependencies: [
@@ -72,6 +84,7 @@ let package = Package(
 )
 
 extension PackageDescription.Target.Dependency {
+    static let argumentParser: PackageDescription.Target.Dependency = .product(name: "ArgumentParser", package: "swift-argument-parser")
     static let cassowary: PackageDescription.Target.Dependency = .product(name: "cassowary", package: "cassowary")
     static let customDump: PackageDescription.Target.Dependency = .product(name: "CustomDump", package: "swift-custom-dump")
     static let numerics: PackageDescription.Target.Dependency = .product(name: "Numerics", package: "swift-numerics")
