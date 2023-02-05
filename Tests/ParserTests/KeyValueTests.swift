@@ -1,3 +1,4 @@
+import CustomDump
 import Draw
 @testable import Parser
 import XCTest
@@ -114,7 +115,7 @@ final class KeyValueTests: XCTestCase {
         ]
         for input in inputs {
             let output = try blockParser.parse(input.value)
-            XCTAssertEqual(
+            XCTAssertNoDifference(
                 output,
                 [
                     .color(BlockField.ColorField(fieldID: .backgroundColor, value: Color(hex: 0xAA_BB_CC_DD))),
