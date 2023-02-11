@@ -211,7 +211,10 @@ private func boxStyle(from style: TopLevelDecl.BoxStyle) throws -> BoxStyle {
             case .backgroundColor: boxStyle.backgroundColor = colorField.value
             }
         case let .numeric(numericField):
-            throw UnsupportedFieldTypeError(field: numericField.fieldID.rawValue)
+            switch numericField.fieldID {
+            case .horizontalPadding: boxStyle.horizontalPadding = numericField.value
+            case .lineWidth: throw UnsupportedFieldTypeError(field: numericField.fieldID.rawValue)
+            }
         case let .string(stringField):
             throw UnsupportedFieldTypeError(field: stringField.fieldID.rawValue)
         case let .variable(variableField):
@@ -256,6 +259,8 @@ private func box(
 
         case let .numeric(numericField):
             switch numericField.fieldID {
+            case .horizontalPadding:
+                style.horizontalPadding = numericField.value
             case .lineWidth:
                 throw UnsupportedFieldTypeError(field: numericField.fieldID.rawValue)
             }
@@ -284,7 +289,7 @@ private func box(
 
     let boxStyleID: BoxStyle.ID?
     var returnedStyle: BoxStyle? = nil
-    if style.textColor != nil || style.backgroundColor != nil {
+    if style.hasCustomizedValues {
         if let parentStyle {
             style.inherits = [parentStyle]
         }
@@ -318,6 +323,7 @@ private func connectionProperties(
 
         case let .numeric(numericField):
             switch numericField.fieldID {
+            case .horizontalPadding: throw UnsupportedFieldTypeError(field: numericField.fieldID.rawValue)
             case .lineWidth: properties.lineWidth = numericField.value
             }
 

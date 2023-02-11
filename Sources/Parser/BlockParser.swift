@@ -3,6 +3,7 @@ import Parsing
 
 public enum NumericFieldID: String, CaseIterable {
     case lineWidth = "line-width"
+    case horizontalPadding = "horizontal-padding"
 }
 
 public enum VariableFieldID: String, CaseIterable {

@@ -12,7 +12,14 @@ public struct BoxStyle {
     public let id: ID
     public var inherits: [ID] = []
     public var backgroundColor: Color?
+    public var horizontalPadding: Double?
     public var textColor: Color?
+
+    public var hasCustomizedValues: Bool {
+        self.backgroundColor != nil ||
+            self.horizontalPadding != nil ||
+            self.textColor != nil
+    }
 }
 
 extension Tagged where Tag == BoxStyle.Tags.ID, RawValue == String {
@@ -246,7 +253,9 @@ extension Graph {
             try solver.add(constraint: box.right.variable <= self.right.variable - outerMargin)
             try solver.add(constraint: box.bottom.variable <= self.bottom.variable - outerMargin)
 
-            let size = graphics.measure(attributedText: attributedText(for: box))
+            var size = graphics.measure(attributedText: attributedText(for: box))
+            let horizontalPadding = self.boxStyles.computedStyle(box: box, keyPath: \.horizontalPadding) ?? 0.0
+            size.width += horizontalPadding * 2.0
 
             try solver.add(constraint: box.height.variable >= 0)
             try solver.add(constraint: box.height.variable == size.height, .weak)

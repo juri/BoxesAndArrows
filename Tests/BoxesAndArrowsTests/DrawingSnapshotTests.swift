@@ -245,6 +245,31 @@ final class DrawingSnapshotTests: XCTestCase {
         assertSnapshot(matching: commands, as: .dump)
     }
 
+    func testHorizontalPadding() throws {
+        let input = """
+        box-style style1 { background-color: #FF90F4; text-color: black; }
+        box-style style2 { background-color: #00BFC8; text-color: white; horizontal-padding: 6.0; }
+
+        box n1 { label: "_w_i_d_e_b_o_y_"; style: style1 }
+        box n2 { style: style2 }
+
+        connect n1 n2 { head1: filled_vee; head2: filled_vee; line-width: 2.0 }
+        constrain n1.left == n2.right + 160.0
+        constrain n1.top == n2.top
+        constrain n2.height == n1.height * 2
+        """
+
+        func _draw<T>(graphics: any Graphics<T>) throws -> T {
+            try drawSpec(input, graphics: graphics)
+        }
+
+        let commands = try _draw(graphics: TestGraphics())
+        let image = try _draw(graphics: GraphicsCocoa())
+
+        assertSnapshot(matching: image, as: .image)
+        assertSnapshot(matching: commands, as: .dump)
+    }
+
     func testDefaultBoxStyle() throws {
         let input = """
         box-style default { background-color: #FF90F4; text-color: black; }

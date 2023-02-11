@@ -1,0 +1,175 @@
+▿ 23 elements
+  ▿ DrawCommand
+    ▿ setFill: Color
+      - alpha: 1.0
+      - blue: 1.0
+      - green: 1.0
+      - red: 1.0
+  ▿ DrawCommand
+    ▿ fill: 1 element
+      ▿ Rectangle
+        ▿ origin: Point
+          - x: 0.0
+          - y: 0.0
+        ▿ size: Size
+          - height: 140.0
+          - width: 442.0
+  ▿ DrawCommand
+    ▿ addRect: Rectangle
+      ▿ origin: Point
+        - x: 242.0
+        - y: 50.0
+      ▿ size: Size
+        - height: 20.0
+        - width: 150.0
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ fillStroke: FillStrokeStyle
+        ▿ fill: FillStyle
+          ▿ color: Color
+            - alpha: 1.0
+            - blue: 0.9568627450980393
+            - green: 0.5647058823529412
+            - red: 1.0
+        ▿ stroke: StrokeStyle
+          ▿ color: Color
+            - alpha: 1.0
+            - blue: 0.0
+            - green: 0.0
+            - red: 0.0
+          - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ draw: (2 elements)
+      ▿ text: AttributedText
+        ▿ font: Optional<Font>
+          ▿ some: Font
+            ▿ systemDefault: (1 element)
+              - size: 16.0
+        - text: "_w_i_d_e_b_o_y_"
+        ▿ textAlignment: Optional<TextAlignment>
+          - some: TextAlignment.center
+        ▿ textColor: Optional<Color>
+          ▿ some: Color
+            - alpha: 1.0
+            - blue: 0.0
+            - green: 0.0
+            - red: 0.0
+      ▿ point: Point
+        - x: 242.0
+        - y: 50.0
+  ▿ DrawCommand
+    ▿ addRect: Rectangle
+      ▿ origin: Point
+        - x: 50.0
+        - y: 50.0
+      ▿ size: Size
+        - height: 40.0
+        - width: 32.0
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ fillStroke: FillStrokeStyle
+        ▿ fill: FillStyle
+          ▿ color: Color
+            - alpha: 1.0
+            - blue: 0.7843137254901961
+            - green: 0.7490196078431373
+            - red: 0.0
+        ▿ stroke: StrokeStyle
+          ▿ color: Color
+            - alpha: 1.0
+            - blue: 0.0
+            - green: 0.0
+            - red: 0.0
+          - lineWidth: 1.0
+  ▿ DrawCommand
+    ▿ draw: (2 elements)
+      ▿ text: AttributedText
+        ▿ font: Optional<Font>
+          ▿ some: Font
+            ▿ systemDefault: (1 element)
+              - size: 16.0
+        - text: "n2"
+        ▿ textAlignment: Optional<TextAlignment>
+          - some: TextAlignment.center
+        ▿ textColor: Optional<Color>
+          ▿ some: Color
+            - alpha: 1.0
+            - blue: 1.0
+            - green: 1.0
+            - red: 1.0
+      ▿ point: Point
+        - x: 56.0
+        - y: 60.0
+  ▿ DrawCommand
+    ▿ move: Point
+      - x: 242.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 237.5
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 82.5
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 82.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ stroke: StrokeStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+        - lineWidth: 2.0
+  ▿ DrawCommand
+    ▿ move: Point
+      - x: 242.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 237.0
+      - y: 48.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 237.0
+      - y: 56.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 242.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ fill: FillStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
+  ▿ DrawCommand
+    ▿ move: Point
+      - x: 82.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 87.0
+      - y: 48.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 87.0
+      - y: 56.5
+  ▿ DrawCommand
+    ▿ addLine: Point
+      - x: 82.0
+      - y: 52.5
+  ▿ DrawCommand
+    ▿ drawPath: DrawMethod
+      ▿ fill: FillStyle
+        ▿ color: Color
+          - alpha: 1.0
+          - blue: 0.0
+          - green: 0.0
+          - red: 0.0
