@@ -213,7 +213,7 @@ private func boxStyle(from style: TopLevelDecl.BoxStyle) throws -> BoxStyle {
         case let .numeric(numericField):
             switch numericField.fieldID {
             case .horizontalPadding: boxStyle.horizontalPadding = numericField.value
-            case .lineWidth: throw UnsupportedFieldTypeError(field: numericField.fieldID.rawValue)
+            case .lineWidth: boxStyle.lineWidth = numericField.value
             }
         case let .string(stringField):
             throw UnsupportedFieldTypeError(field: stringField.fieldID.rawValue)
@@ -262,7 +262,7 @@ private func box(
             case .horizontalPadding:
                 style.horizontalPadding = numericField.value
             case .lineWidth:
-                throw UnsupportedFieldTypeError(field: numericField.fieldID.rawValue)
+                style.lineWidth = numericField.value
             }
 
         case let .string(stringField):

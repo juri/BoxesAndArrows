@@ -21,15 +21,16 @@ func draw<Image>(graph: Graph, graphics: any Graphics<Image>) -> Image {
             attributedText.textColor = textColor
         }
         commands.append(.addRect(box.frame))
+        let lineWidth = graph.boxStyles.computedStyle(box: box, keyPath: \.lineWidth) ?? 1.0
         if let backgroundColor = graph.boxStyles.computedStyle(box: box, keyPath: \.backgroundColor) {
             commands.append(.drawPath(.fillStroke(
                 FillStrokeStyle(
                     fill: FillStyle(color: backgroundColor),
-                    stroke: StrokeStyle(color: .black)
+                    stroke: StrokeStyle(color: .black, lineWidth: lineWidth)
                 )
             )))
         } else {
-            commands.append(.drawPath(.stroke(StrokeStyle(color: .black))))
+            commands.append(.drawPath(.stroke(StrokeStyle(color: .black, lineWidth: lineWidth))))
         }
         let textSize = graphics.measure(attributedText: attributedText)
         let xOrigin = box.frame.minX + (box.frame.width / 2.0 - textSize.width / 2.0)

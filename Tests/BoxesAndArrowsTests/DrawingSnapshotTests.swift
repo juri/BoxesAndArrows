@@ -195,9 +195,9 @@ final class DrawingSnapshotTests: XCTestCase {
         assertSnapshot(matching: commands, as: .dump)
     }
 
-    func testDrawSpec() throws {
+    func testLineWidth() throws {
         let input = """
-        box-style style1 { background-color: #FF90F4; text-color: black; }
+        box-style style1 { background-color: #FF90F4; text-color: black; line-width: 3.0; }
         box-style style2 { background-color: #00BFC8; text-color: white; }
 
         box n1 { style: style1 }

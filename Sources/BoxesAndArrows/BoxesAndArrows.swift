@@ -13,11 +13,13 @@ public struct BoxStyle {
     public var inherits: [ID] = []
     public var backgroundColor: Color?
     public var horizontalPadding: Double?
+    public var lineWidth: Double?
     public var textColor: Color?
 
     public var hasCustomizedValues: Bool {
         self.backgroundColor != nil ||
             self.horizontalPadding != nil ||
+            self.lineWidth != nil ||
             self.textColor != nil
     }
 }

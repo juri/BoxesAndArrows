@@ -37,7 +37,7 @@
             - blue: 0.0
             - green: 0.0
             - red: 0.0
-          - lineWidth: 1.0
+          - lineWidth: 3.0
   ▿ DrawCommand
     ▿ draw: (2 elements)
       ▿ text: AttributedText
